@@ -1,0 +1,15 @@
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\bin\Debug\net10.0\FlowerEcommerce.Application.deps.json
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\bin\Debug\net10.0\FlowerEcommerce.Application.dll
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\bin\Debug\net10.0\FlowerEcommerce.Application.pdb
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\bin\Debug\net10.0\FlowerEcommerce.Domain.dll
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\bin\Debug\net10.0\FlowerEcommerce.Domain.pdb
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.csproj.AssemblyReference.cache
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.AssemblyInfoInputs.cache
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.AssemblyInfo.cs
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.csproj.CoreCompileInputs.cache
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEc.011D9832.Up2Date
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.dll
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\refint\FlowerEcommerce.Application.dll
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\FlowerEcommerce.Application.pdb
+D:\C#\FlowerEcommerce\FlowerEcommerce.Application\obj\Debug\net10.0\ref\FlowerEcommerce.Application.dll

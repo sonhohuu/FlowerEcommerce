@@ -1,0 +1,6 @@
+@FlowerEcommerce.API_HostAddress = http://localhost:5251
+
+GET {{FlowerEcommerce.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

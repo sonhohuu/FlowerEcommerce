@@ -1,0 +1,394 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\C#\\FlowerEcommerce\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.infrastructure\\persistence\\database\\unitofwork\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|solutionrelative:flowerecommerce.infrastructure\\persistence\\database\\unitofwork\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\interfaces\\repositories\\ibaserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\interfaces\\repositories\\ibaserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.infrastructure\\persistence\\database\\unitofwork\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|solutionrelative:flowerecommerce.infrastructure\\persistence\\database\\unitofwork\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\base\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\base\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\base\\creationauditedentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\base\\creationauditedentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\base\\deletionauditedentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\base\\deletionauditedentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\base\\modificationauditedentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\base\\modificationauditedentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4CE8DDEB-F467-D76A-1AC3-6513DDF5BB23}|FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.application\\common\\extensions\\mapperextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4CE8DDEB-F467-D76A-1AC3-6513DDF5BB23}|FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj|solutionrelative:flowerecommerce.application\\common\\extensions\\mapperextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4CE8DDEB-F467-D76A-1AC3-6513DDF5BB23}|FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.application\\common\\attributes\\nomapattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4CE8DDEB-F467-D76A-1AC3-6513DDF5BB23}|FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj|solutionrelative:flowerecommerce.application\\common\\attributes\\nomapattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4CE8DDEB-F467-D76A-1AC3-6513DDF5BB23}|FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.application\\flowerecommerce.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{4CE8DDEB-F467-D76A-1AC3-6513DDF5BB23}|FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj|solutionrelative:flowerecommerce.application\\flowerecommerce.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.infrastructure\\persistence\\database\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|solutionrelative:flowerecommerce.infrastructure\\persistence\\database\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\fileattachment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\fileattachment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\entities\\productrating.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\entities\\productrating.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.domain\\flowerecommerce.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{BA609105-365F-D1F3-FE33-03931FC24734}|FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj|solutionrelative:flowerecommerce.domain\\flowerecommerce.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.infrastructure\\flowerecommerce.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5CED821B-0735-06DE-0E03-BEE863E636B3}|FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj|solutionrelative:flowerecommerce.infrastructure\\flowerecommerce.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{53BD81EF-9822-CCC8-D4BB-610A129DD700}|FlowerEcommerce.API\\FlowerEcommerce.API.csproj|d:\\c#\\flowerecommerce\\flowerecommerce.api\\flowerecommerce.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{53BD81EF-9822-CCC8-D4BB-610A129DD700}|FlowerEcommerce.API\\FlowerEcommerce.API.csproj|solutionrelative:flowerecommerce.api\\flowerecommerce.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A5DE63AB-AF10-4A8D-A25A-8A7F659D7A0E}|FlowerEcommerce\\FlowerEcommerce.View.csproj|d:\\c#\\flowerecommerce\\flowerecommerce\\flowerecommerce.view.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A5DE63AB-AF10-4A8D-A25A-8A7F659D7A0E}|FlowerEcommerce\\FlowerEcommerce.View.csproj|solutionrelative:flowerecommerce\\flowerecommerce.view.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 16,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UnitOfWork.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\UnitOfWork.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\UnitOfWork.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\UnitOfWork.cs",
+              "RelativeToolTip": "FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\UnitOfWork.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAwIkAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T10:01:49.789Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "NoMapAttribute.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Application\\Common\\Attributes\\NoMapAttribute.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Application\\Common\\Attributes\\NoMapAttribute.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Application\\Common\\Attributes\\NoMapAttribute.cs",
+              "RelativeToolTip": "FlowerEcommerce.Application\\Common\\Attributes\\NoMapAttribute.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T09:21:39.671Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MapperExtensions.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Application\\Common\\Extensions\\MapperExtensions.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Application\\Common\\Extensions\\MapperExtensions.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Application\\Common\\Extensions\\MapperExtensions.cs",
+              "RelativeToolTip": "FlowerEcommerce.Application\\Common\\Extensions\\MapperExtensions.cs",
+              "ViewState": "AgIAADQAAAAAAAAAAAAYwBcAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T09:20:42.998Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "OrderItem.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\OrderItem.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\OrderItem.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\OrderItem.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\OrderItem.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA0AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T06:25:12.024Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Product.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Product.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Product.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Product.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Product.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:26:56.819Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\ApplicationUser.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\ApplicationUser.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\ApplicationUser.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABgAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:27:37.642Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ProductRating.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\ProductRating.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\ProductRating.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\ProductRating.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\ProductRating.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T02:50:42.103Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Order.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Order.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Order.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Order.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Order.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T02:56:24.638Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Category.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Category.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Category.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:27:13.22Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "FileAttachment.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\FileAttachment.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\FileAttachment.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\FileAttachment.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\FileAttachment.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T02:35:11.232Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CreationAuditedEntity.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\CreationAuditedEntity.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Base\\CreationAuditedEntity.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\CreationAuditedEntity.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Base\\CreationAuditedEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:24:19.174Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DeletionAuditedEntity.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\DeletionAuditedEntity.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Base\\DeletionAuditedEntity.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\DeletionAuditedEntity.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Base\\DeletionAuditedEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:24:39.44Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ModificationAuditedEntity.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\ModificationAuditedEntity.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Base\\ModificationAuditedEntity.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\ModificationAuditedEntity.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Base\\ModificationAuditedEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAwAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:24:29.841Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "FlowerEcommerce.Domain.csproj",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\FlowerEcommerce.Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-15T10:17:57.721Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\Persistence\\Database\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Infrastructure\\Persistence\\Database\\ApplicationDbContext.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\Persistence\\Database\\ApplicationDbContext.cs",
+              "RelativeToolTip": "FlowerEcommerce.Infrastructure\\Persistence\\Database\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T15:42:55.131Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IBaseRepository.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Interfaces\\Repositories\\IBaseRepository.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Interfaces\\Repositories\\IBaseRepository.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Interfaces\\Repositories\\IBaseRepository.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Interfaces\\Repositories\\IBaseRepository.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAIAwwCUAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T10:54:11.125Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BaseRepository.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\BaseRepository.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\BaseRepository.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\BaseRepository.cs",
+              "RelativeToolTip": "FlowerEcommerce.Infrastructure\\Persistence\\Database\\UnitOfWork\\BaseRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAYAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T10:51:54.837Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BaseEntity.cs",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\BaseEntity.cs",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Domain\\Entities\\Base\\BaseEntity.cs",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Domain\\Entities\\Base\\BaseEntity.cs",
+              "RelativeToolTip": "FlowerEcommerce.Domain\\Entities\\Base\\BaseEntity.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:22:03.679Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "FlowerEcommerce.Infrastructure.csproj",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj",
+              "RelativeToolTip": "FlowerEcommerce.Infrastructure\\FlowerEcommerce.Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-16T10:38:47.79Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "FlowerEcommerce.API.csproj",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.API\\FlowerEcommerce.API.csproj",
+              "RelativeDocumentMoniker": "FlowerEcommerce.API\\FlowerEcommerce.API.csproj",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.API\\FlowerEcommerce.API.csproj",
+              "RelativeToolTip": "FlowerEcommerce.API\\FlowerEcommerce.API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-16T10:30:51.717Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "FlowerEcommerce.Application.csproj",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj",
+              "RelativeDocumentMoniker": "FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj",
+              "RelativeToolTip": "FlowerEcommerce.Application\\FlowerEcommerce.Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-15T10:17:52.872Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "FlowerEcommerce.View.csproj",
+              "DocumentMoniker": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce\\FlowerEcommerce.View.csproj",
+              "RelativeDocumentMoniker": "FlowerEcommerce\\FlowerEcommerce.View.csproj",
+              "ToolTip": "D:\\C#\\FlowerEcommerce\\FlowerEcommerce\\FlowerEcommerce.View.csproj",
+              "RelativeToolTip": "FlowerEcommerce\\FlowerEcommerce.View.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-15T02:47:17.03Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
