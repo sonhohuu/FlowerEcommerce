@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FlowerEcommerce.Application.Interfaces.Repositories
+namespace FlowerEcommerce.Application.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {

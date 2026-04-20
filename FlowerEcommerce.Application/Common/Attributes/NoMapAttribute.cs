@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FlowerEcommerce.Application.Common.Attributes
+﻿namespace FlowerEcommerce.Application.Common.Attributes;
+public class NoMapAttribute : Attribute
 {
-    public class NoMapAttribute : Attribute
-    {
 
-    }
 }
+

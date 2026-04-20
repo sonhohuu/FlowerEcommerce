@@ -1,5 +1,5 @@
 ﻿using FlowerEcommerce.Application.Common.Extensions;
-using FlowerEcommerce.Application.Interfaces.Repositories;
+using FlowerEcommerce.Application.Interfaces;
 using FlowerEcommerce.Domain.Entities.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -14,15 +14,11 @@ namespace FlowerEcommerce.Infrastructure.Persistence.Database.UnitOfWork
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
-        private readonly ulong? _currentUserId;
 
         public BaseRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();
-            _currentUserId = httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value is { } id
-                ? ulong.TryParse(id, out var userId) ? userId : null
-                : null;
         }
 
         #region Query Methods

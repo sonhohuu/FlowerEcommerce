@@ -252,5 +252,5 @@ paket-files/
 *.sln.iml
 
 # Custom project ignore files
-WebApi/logs
-WebApi/wwwroot
+API/logs
+API/wwwroot

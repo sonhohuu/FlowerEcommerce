@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace FlowerEcommerce.Application.Interfaces.Repositories
+namespace FlowerEcommerce.Application.Interfaces
 {
     public interface IBaseRepository<TEntity> where TEntity : BaseEntity
     {

@@ -1,4 +1,4 @@
-﻿using FlowerEcommerce.Application.Interfaces.Repositories;
+﻿using FlowerEcommerce.Application.Interfaces;
 using FlowerEcommerce.Domain.Entities.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
