@@ -1,8 +1,0 @@
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.csproj.AssemblyReference.cache
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\rpswa.dswa.cache.json
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.GeneratedMSBuildEditorConfig.editorconfig
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.AssemblyInfoInputs.cache
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.AssemblyInfo.cs
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.csproj.CoreCompileInputs.cache
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.MvcApplicationPartsAssemblyInfo.cs
-D:\C#\FlowerEcommerce\FlowerEcommerce.API\obj\Debug\net10.0\FlowerEcommerce.API.MvcApplicationPartsAssemblyInfo.cache
