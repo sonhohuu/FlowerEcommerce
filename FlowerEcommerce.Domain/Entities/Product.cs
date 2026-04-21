@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FlowerEcommerce.Domain.Entities
 {
-    public class Product : ModificationAuditedEntity
+    public class Product : DeletionAuditedEntity
     {
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
@@ -13,7 +13,7 @@ namespace FlowerEcommerce.Domain.Entities
 
         #region Category
 
-        public int? CategoryId { get; set; }
+        public ulong? CategoryId { get; set; }
         public Category? Category { get; set; }
 
         #endregion

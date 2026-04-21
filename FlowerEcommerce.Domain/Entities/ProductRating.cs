@@ -1,17 +1,18 @@
-﻿using System;
+﻿using FlowerEcommerce.Domain.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace FlowerEcommerce.Domain.Entities
 {
-    public class ProductRating
+    public class ProductRating : ModificationAuditedEntity
     {
         public int Score { get; set; } // 1-5
         public string Comment { get; set; } = string.Empty;
 
         #region Product
 
-        public int ProductId { get; set; }
+        public ulong ProductId { get; set; }
         public Product? Product { get; set; }
 
         #endregion
@@ -19,6 +20,7 @@ namespace FlowerEcommerce.Domain.Entities
         #region User
 
         public ApplicationUser? User { get; set; }
+        public ulong? UserId { get; set; }
 
         #endregion
     }
