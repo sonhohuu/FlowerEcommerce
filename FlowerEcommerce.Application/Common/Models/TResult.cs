@@ -1,6 +1,4 @@
-﻿using FlowerEcommerce.Domain.Constants;
-
-namespace FlowerEcommerce.Application.Common.Models;
+﻿namespace FlowerEcommerce.Application.Common.Models;
 public class TResult<T>
 {
     public bool IsSuccess { get; }

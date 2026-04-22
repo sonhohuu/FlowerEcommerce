@@ -1,0 +1,16 @@
+﻿global using System.Reflection;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using FlowerEcommerce.Domain.Constants;
+global using FlowerEcommerce.Application.Common.Attributes;
+global using FlowerEcommerce.Domain.Entities.Base;
+global using System.Linq.Expressions;
+global using FlowerEcommerce.Application.Interfaces.UnitOfWork;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+global using FlowerEcommerce.Application.Common.Behaviours;
+global using FluentValidation;
+global using Microsoft.Extensions.DependencyInjection;
+global using FlowerEcommerce.Application.Common.Models;
+global using FlowerEcommerce.Domain.Entities;

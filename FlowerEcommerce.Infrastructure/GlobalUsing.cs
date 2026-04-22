@@ -1,0 +1,16 @@
+﻿global using FlowerEcommerce.Application.Interfaces.Services;
+global using FlowerEcommerce.Domain.Entities.Base;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.ChangeTracking;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
+global using FlowerEcommerce.Domain.Entities;
+global using Microsoft.EntityFrameworkCore.Infrastructure;
+global using Microsoft.Extensions.Logging;
+global using System.Reflection;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using FlowerEcommerce.Application.Common.Extensions;
+global using FlowerEcommerce.Application.Interfaces.UnitOfWork;
+global using System.Linq.Expressions;
+global using Microsoft.AspNetCore.Http;
+global using System.Collections.Concurrent;
+global using Microsoft.EntityFrameworkCore.Storage;

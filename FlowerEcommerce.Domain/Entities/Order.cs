@@ -1,16 +1,9 @@
-﻿using FlowerEcommerce.Domain.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FlowerEcommerce.Domain.Entities
+﻿namespace FlowerEcommerce.Domain.Entities;
+public class Order : DeletionAuditedEntity
 {
-    public class Order : DeletionAuditedEntity
-    {
-        public DateTime? OrderDate { get; set; }
-        public decimal TotalAmount { get; set; }
-        public ApplicationUser? User { get; set; }
-        public ulong? UserId { get; set; }
-        public IList<OrderItem> Items { get; set; } = [];
-    }
+    public DateTime? OrderDate { get; set; }
+    public decimal TotalAmount { get; set; }
+    public ApplicationUser? User { get; set; }
+    public ulong? UserId { get; set; }
+    public IList<OrderItem> Items { get; set; } = [];
 }

@@ -1,9 +1,4 @@
-﻿using FlowerEcommerce.Domain.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FlowerEcommerce.Domain.Entities
+﻿namespace FlowerEcommerce.Domain.Entities
 {
     public class ProductRating : ModificationAuditedEntity
     {

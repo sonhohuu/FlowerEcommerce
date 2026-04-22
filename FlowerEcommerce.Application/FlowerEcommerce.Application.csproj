@@ -15,4 +15,8 @@
     <ProjectReference Include="..\FlowerEcommerce.Domain\FlowerEcommerce.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Handlers\Products\Queries\" />
+  </ItemGroup>
+
 </Project>
