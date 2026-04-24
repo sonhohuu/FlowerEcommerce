@@ -2,8 +2,14 @@
 global using FlowerEcommerce.Application.Interfaces.Services;
 global using System.Security.Claims;
 global using System.Text.Json;
+global using System.Diagnostics;
 global using FlowerEcommerce.Domain.Enums;
 global using FlowerEcommerce.Application.Common.Models;
 global using FlowerEcommerce.Domain.Constants;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
+global using FlowerEcommerce.Application;
+global using FlowerEcommerce.Infrastructure;
+global using FlowerEcommerce.Domain.Exceptions;
+global using FluentValidation;
+global using Asp.Versioning;

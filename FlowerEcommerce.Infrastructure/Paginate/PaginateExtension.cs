@@ -1,0 +1,23 @@
+﻿namespace FlowerEcommerce.Infrastructure.Paginate;
+
+public static class PaginateExtension
+{
+    public static async Task<IPaginate<T>> ToPaginateAsync<T>(this IQueryable<T> queryable, int page, int size, int firstPage = 1, CancellationToken cancellationToken = default)
+    {
+        if (firstPage > page)
+            throw new ArgumentException($"page ({page}) must greater or equal than firstPage ({firstPage})");
+        if (size == 0)
+            throw new ArgumentException($"size ({size}) must greater than 0");
+        var total = await queryable.CountAsync(cancellationToken);
+        var items = await queryable.Skip((page - firstPage) * size).Take(size).ToListAsync(cancellationToken);
+        var totalPages = (int)Math.Ceiling(total / (double)size);
+        return new Paginate<T>
+        {
+            Page = page,
+            Size = size,
+            Total = total,
+            Items = items,
+            TotalPages = totalPages
+        };
+    }
+}

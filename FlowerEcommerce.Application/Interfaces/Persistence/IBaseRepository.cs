@@ -1,134 +1,180 @@
 ﻿namespace FlowerEcommerce.Application.Interfaces.UnitOfWork;
-public interface IBaseRepository<TEntity> where TEntity : BaseEntity
+
+public interface IBaseRepository<T> where T : class, IBaseEntity
 {
-    #region Query Methods
+    #region ==================== UTILITIES ====================
 
-    /// <summary>
-    /// Find entities with optional filters, ordering, paging, and includes.
-    /// </summary>
-    Task<List<TEntity>> FindAsync(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        int skip = 0,
-        int limit = 0,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes);
-
-    /// <summary>
-    /// Find entities and project to DTO type.
-    /// </summary>
-    Task<List<TDto>> FindAsync<TDto>(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        int skip = 0,
-        int limit = 0,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes);
-
-    /// <summary>
-    /// Count entities matching the filters.
-    /// </summary>
-    Task<int> CountAsync(Expression<Func<TEntity, bool>>[]? filters = null, bool isNoTracking = false);
-
-    /// <summary>
-    /// Check if any entity matches the filters.
-    /// </summary>
-    Task<bool> AnyAsync(Expression<Func<TEntity, bool>>[]? filters = null, bool isNoTracking = true);
-
-    /// <summary>
-    /// Check if an entity with the given ID exists (not deleted).
-    /// </summary>
-    Task<bool> ExistsAsync(ulong id);
-
-    /// <summary>
-    /// Check if all entities with the given IDs exist (not deleted).
-    /// </summary>
-    Task<bool> ExistsAsync(IEnumerable<ulong> ids);
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     #endregion
 
-    #region FindOne Methods
+    #region ==================== CREATE ====================
 
-    /// <summary>
-    /// Find a single entity by ID with optional includes for related entities.
-    /// </summary>
-    Task<TEntity?> FindByIdAsync(ulong id, bool isNoTracking, params Expression<Func<TEntity, object>>[] includes);
+    public void Add(T entity);
 
-    /// <summary>
-    /// Find a single entity by ID and project to DTO.
-    /// </summary>
-    Task<TDto?> FindByIdAsync<TDto>(ulong id,bool isNoTracking, params Expression<Func<TEntity, object>>[] includes);
+    public void AddRange(IEnumerable<T> entities);
 
-    /// <summary>
-    /// Find the first entity matching filters with optional ordering and includes.
-    /// </summary>
-    Task<TEntity?> FindOneAsync(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes);
+    public void Attach(T entity);
 
-    /// <summary>
-    /// Find the first entity matching filters and project to DTO.
-    /// </summary>
-    Task<TDto?> FindOneAsync<TDto>(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes);
+    public void AttachRange(IEnumerable<T> entities);
 
     #endregion
 
-    #region CUD Operations
+    #region ==================== UPDATE ====================
 
-    /// <summary>
-    /// Insert a new entity.
-    /// </summary>
-    Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
+    public void Update(T entity);
 
-    /// <summary>
-    /// Insert multiple entities.
-    /// </summary>
-    Task InsertRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Update an existing entity.
-    /// </summary>
-    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Update multiple entities.
-    /// </summary>
-    Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Soft delete an entity by ID.
-    /// </summary>
-    Task<bool> DeleteAsync(ulong id, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Soft delete an entity.
-    /// </summary>
-    Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Soft delete multiple entities.
-    /// </summary>
-    Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    public void UpdateRange(IEnumerable<T> entities);
 
     #endregion
 
-    #region Query Builders
+    #region ==================== DELETE ====================
 
-    /// <summary>
-    /// Get a queryable for the entity type. By default excludes soft-deleted entities.
-    /// </summary>
-    IQueryable<TEntity> Query();
+    public void Remove(T entity);
 
-    /// <summary>
-    /// Get a no-tracking queryable for read-only operations.
-    /// </summary>
-    IQueryable<TEntity> QueryNoTracking();
+    public void RemoveRange(IEnumerable<T> entities);
+
+    #endregion
+
+    #region ==================== READ ====================
+
+    public ValueTask<T?> FindByKeysAsync(
+        CancellationToken cancellationToken = default,
+        params object[] keyValues
+    );
+
+    public Task<bool> AllAsync(
+        Expression<Func<T, bool>> predicate,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<bool> AnyAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<int> CountAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<List<T>> GetAllAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<List<TResult>> GetAllAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<List<TResult>> GetAllAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<T?> FirstOrDefaultAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<TResult?> FirstOrDefaultAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<TResult?> FirstOrDefaultAsync<TResult>(
+       Expression<Func<T, TResult>> selector,
+       Expression<Func<T, bool>>? predicate = null,
+       List<string>? includes = null,
+       Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+       bool asNoTracking = false,
+       CancellationToken cancellationToken = default
+   );
+
+    #endregion
+
+    #region ==================== PAGINATION ====================
+
+    public Task<(List<T>, int)> GetPaginationAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        int page = 1,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<(List<TResult>, int)> GetPaginationAsync<TResult>(
+    Expression<Func<T, bool>>? predicate = null,
+    List<string>? includes = null,
+    Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+    int page = 1,
+    int pageSize = AppConstants.DefaultPageSize,
+    CancellationToken cancellationToken = default
+);
+
+    public Task<IPaginate<T>> GetPagingListAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        List<string>? includes = null,
+        int page = 1,
+        int size = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<IPaginate<TResult>> GetPagingListAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        List<string>? includes = null,
+        int page = 1,
+        int size = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<IPaginate<TResult>> GetPagingListAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        List<string>? includes = null,
+        int page = 1,
+        int size = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+  );
+
+    public Task<(List<T>, int)> GetDtPaginationAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        string? orderStatement = null,
+        int page = 0,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<(List<TResult>, int)> GetDtPaginationAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        string? orderStatement = null,
+        int page = 0,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    );
 
     #endregion
 }

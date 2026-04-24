@@ -1,261 +1,437 @@
 ﻿namespace FlowerEcommerce.Infrastructure.Persistence.Database.UnitOfWork;
-
-public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
+public class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
 {
-    private readonly ApplicationDbContext _context;
-    private readonly DbSet<TEntity> _dbSet;
+    private readonly DbContext _dbContext;
+    private readonly DbSet<T> _dbSet;
 
-    public BaseRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    public BaseRepository(ApplicationDbContext context)
     {
-        _context = context;
-        _dbSet = context.Set<TEntity>();
+        _dbContext = context;
+        _dbSet = context.Set<T>();
     }
 
-    #region Query Methods
+    #region ==================== CREATE ====================
 
-    public virtual async Task<List<TEntity>> FindAsync(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        int skip = 0,
-        int limit = 0,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes)
+    public virtual void Add(T entity)
     {
-        var query = BuildQuery(filters, orderBy, skip, limit, isNoTracking, includes);
-        return await query.ToListAsync();
+        _dbSet.Add(entity);
     }
 
-    public virtual async Task<List<TDto>> FindAsync<TDto>(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        int skip = 0,
-        int limit = 0,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes)
+    public virtual void AddRange(IEnumerable<T> entities)
     {
-        var entities = await FindAsync(filters, orderBy, skip, limit, isNoTracking, includes);
-        return entities.ProjectTo<TEntity, TDto>();
+        _dbSet.AddRange(entities);
     }
 
-    public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>>[]? filters = null, bool isNoTracking = false)
+    public virtual void Attach(T entity)
     {
-        var query = isNoTracking ? QueryNoTracking() : Query();
-        query = ApplyFilters(query, filters);
-        return await query.CountAsync();
+        _dbSet.Attach(entity);
     }
 
-    public virtual async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>[]? filters = null, bool isNoTracking = false)
+    public virtual void AttachRange(IEnumerable<T> entities)
     {
-        var query = isNoTracking ? QueryNoTracking() : Query();
-        query = ApplyFilters(query, filters);
-        return await query.AnyAsync();
-    }
-
-    public virtual async Task<bool> ExistsAsync(ulong id)
-    {
-        return await _dbSet.AnyAsync(x => x.Id == id);
-    }
-
-    public virtual async Task<bool> ExistsAsync(IEnumerable<ulong> ids)
-    {
-        var idList = ids.ToList();
-        var count = await _dbSet.CountAsync(x => idList.Contains(x.Id));
-        return count == idList.Count;
+        _dbSet.AttachRange(entities);
     }
 
     #endregion
 
-    #region FindOne Methods
+    #region ==================== UPDATE ====================
 
-    public virtual async Task<TEntity?> FindByIdAsync(ulong id, bool isNoTracking = false, params Expression<Func<TEntity, object>>[] includes)
+    public virtual void Update(T entity)
     {
-        var query = isNoTracking ? QueryNoTracking() : Query();
-        query = ApplyIncludes(query, includes);
-        return await query.FirstOrDefaultAsync(x => x.Id == id);
+        _dbSet.Update(entity);
     }
 
-    public virtual async Task<TDto?> FindByIdAsync<TDto>(ulong id, bool isNoTracking = false, params Expression<Func<TEntity, object>>[] includes)
+    public virtual void UpdateRange(IEnumerable<T> entities)
     {
-        var entity = await FindByIdAsync(id, isNoTracking, includes);
-        return entity == null ? default : entity.ProjectTo<TEntity, TDto>();
-    }
-
-    public virtual async Task<TEntity?> FindOneAsync(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes)
-    {
-        var query = isNoTracking ? QueryNoTracking() : Query();
-        query = ApplyFilters(query, filters);
-        query = ApplyIncludes(query, includes);
-        query = ApplyOrderBy(query, orderBy);
-        return await query.FirstOrDefaultAsync();
-    }
-
-    public virtual async Task<TDto?> FindOneAsync<TDto>(
-        Expression<Func<TEntity, bool>>[]? filters = null,
-        string? orderBy = null,
-        bool isNoTracking = false,
-        params Expression<Func<TEntity, object>>[] includes)
-    {
-        var entity = await FindOneAsync(filters, orderBy, isNoTracking, includes);
-        return entity == null ? default : entity.ProjectTo<TEntity, TDto>();
+        _dbSet.UpdateRange(entities);
     }
 
     #endregion
 
-    #region CUD Operations
+    #region ==================== DELETE ====================
 
-    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public virtual void Remove(T entity)
     {
-        await _dbSet.AddAsync(entity, cancellationToken);
-        return entity;
+        _dbSet.Remove(entity);
     }
 
-    public virtual async Task InsertRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public virtual void RemoveRange(IEnumerable<T> entities)
     {
-        await _dbSet.AddRangeAsync(entities, cancellationToken);
-    }
-
-    public virtual Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        _context.Entry(entity).State = EntityState.Modified;
-        return Task.FromResult(entity);
-    }
-
-    public virtual Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
-    {
-        foreach (var entity in entities)
-        {
-            _context.Entry(entity).State = EntityState.Modified;
-        }
-        return Task.CompletedTask;
-    }
-
-    public virtual async Task<bool> DeleteAsync(ulong id, CancellationToken cancellationToken = default)
-    {
-        var entity = await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-        if (entity == null) return false;
-
-        return await DeleteAsync(entity, cancellationToken);
-    }
-
-    public virtual Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        _context.Entry(entity).State = EntityState.Modified;
-        return Task.FromResult(true);
-    }
-
-    public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
-    {
-        foreach (var entity in entities)
-        {
-            _context.Entry(entity).State = EntityState.Modified;
-        }
-        return Task.CompletedTask;
+        _dbSet.RemoveRange(entities);
     }
 
     #endregion
 
-    #region Query Builders
+    #region ==================== READ ====================
 
-    public virtual IQueryable<TEntity> Query()
+    protected virtual IQueryable<T> AsNoTracking()
+    {
+        return _dbSet.AsNoTracking();
+    }
+
+    protected virtual IQueryable<T> AsQueryable()
     {
         return _dbSet.AsQueryable();
     }
 
-    public virtual IQueryable<TEntity> QueryNoTracking()
+    // For composite keys
+    public virtual async ValueTask<T?> FindByKeysAsync(
+        CancellationToken cancellationToken = default,
+        params object[] keyValues
+    )
     {
-        return Query().AsNoTracking();
+        return await _dbSet.FindAsync(keyValues, cancellationToken);
+    }
+
+    public virtual async Task<bool> AllAsync(
+        Expression<Func<T, bool>> predicate,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await AsNoTracking().AllAsync(predicate, cancellationToken);
+    }
+
+    public virtual async Task<bool> AnyAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return predicate is null
+            ? await AsNoTracking().AnyAsync(cancellationToken)
+            : await AsNoTracking().AnyAsync(predicate, cancellationToken);
+    }
+
+    public virtual async Task<int> CountAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return predicate is null
+            ? await AsNoTracking().CountAsync(cancellationToken)
+            : await AsNoTracking().CountAsync(predicate, cancellationToken);
+    }
+
+    public virtual async Task<List<T>> GetAllAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, asNoTracking);
+
+        return await dbSetQueryable.ToListAsync(cancellationToken);
+    }
+
+    public virtual async Task<List<TResult>> GetAllAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, asNoTracking);
+
+        return await dbSetQueryable
+            .AsSplitQuery()
+            .ProjectToType<TResult>()
+            .ToListAsync(cancellationToken);
+    }
+
+    public virtual async Task<List<TResult>> GetAllAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, asNoTracking);
+
+        return await dbSetQueryable
+            .AsSplitQuery()
+            .Select(selector)
+            .ToListAsync(cancellationToken);
+    }
+
+    public virtual async Task<T?> FirstOrDefaultAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, asNoTracking);
+
+        return await dbSetQueryable.FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public virtual async Task<TResult?> FirstOrDefaultAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = false,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, asNoTracking);
+
+        return await dbSetQueryable
+            .AsSplitQuery()
+            .ProjectToType<TResult>()
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public virtual async Task<TResult?> FirstOrDefaultAsync<TResult>(
+       Expression<Func<T, TResult>> selector,
+       Expression<Func<T, bool>>? predicate = null,
+       List<string>? includes = null,
+       Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+       bool asNoTracking = false,
+       CancellationToken cancellationToken = default
+   )
+    {
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, asNoTracking);
+
+        return await dbSetQueryable
+            .AsSplitQuery()
+            .Select(selector)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     #endregion
 
-    #region Protected Helpers
+    #region ==================== PAGINATION ====================
 
-    protected IQueryable<TEntity> BuildQuery(
-        Expression<Func<TEntity, bool>>[]? filters,
-        string? orderBy,
-        int skip,
-        int limit,
-        bool isNoTracking,
-        Expression<Func<TEntity, object>>[]? includes)
+    public Task<IPaginate<T>> GetPagingListAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        List<string>? includes = null,
+        int page = 1,
+        int size = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
-        var query = isNoTracking ? QueryNoTracking() : Query();
-        query = ApplyFilters(query, filters);
-        query = ApplyIncludes(query, includes);
-        query = ApplyOrderBy(query, orderBy);
-        query = ApplyPaging(query, skip, limit);
-        return query;
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, true);
+        page = page < 1 ? 1 : page;
+        size = size is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : size;
+        return dbSetQueryable.ToPaginateAsync(page, size, 1, cancellationToken);
     }
 
-    protected static IQueryable<TEntity> ApplyFilters(IQueryable<TEntity> query, Expression<Func<TEntity, bool>>[]? filters)
+    public Task<IPaginate<TResult>> GetPagingListAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        List<string>? includes = null,
+        int page = 1,
+        int size = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
-        if (filters == null || filters.Length == 0) return query;
-        return filters.Aggregate(query, (current, filter) => current.Where(filter));
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, true);
+        page = page < 1 ? 1 : page;
+        size = size is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : size;
+        return dbSetQueryable.ProjectToType<TResult>().ToPaginateAsync(page, size, 1, cancellationToken);
     }
 
-    protected static IQueryable<TEntity> ApplyIncludes(IQueryable<TEntity> query, Expression<Func<TEntity, object>>[]? includes)
+    public Task<IPaginate<TResult>> GetPagingListAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        List<string>? includes = null,
+        int page = 1,
+        int size = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
-        if (includes == null || includes.Length == 0) return query;
-        return includes.Aggregate(query, (current, include) => current.Include(include));
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, true);
+        page = page < 1 ? 1 : page;
+        size = size is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : size;
+        return dbSetQueryable.Select(selector).ToPaginateAsync(page, size, 1, cancellationToken);
     }
 
-    protected static IQueryable<TEntity> ApplyOrderBy(IQueryable<TEntity> query, string? orderBy)
+    public virtual async Task<(List<T>, int)> GetPaginationAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        int page = 1,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    )
     {
-        if (string.IsNullOrWhiteSpace(orderBy)) return query;
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : pageSize;
 
-        var parts = orderBy.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var propertyName = parts[0];
-        var isDescending = parts.Length > 1 && parts[1].Equals("desc", StringComparison.OrdinalIgnoreCase);
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, true);
 
-        // Convert first letter to uppercase for property matching
-        propertyName = char.ToUpper(propertyName[0]) + propertyName[1..];
+        var totalRecords = await dbSetQueryable.CountAsync(cancellationToken);
 
-        return isDescending
-            ? query.OrderByDescending(e => EF.Property<object>(e, propertyName))
-            : query.OrderBy(e => EF.Property<object>(e, propertyName));
+        var items = await dbSetQueryable
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalRecords);
     }
 
-    protected static IQueryable<TEntity> ApplyPaging(IQueryable<TEntity> query, int skip, int limit)
+    public virtual async Task<(List<TResult>, int)> GetPaginationAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        int page = 1,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    )
     {
-        if (skip > 0) query = query.Skip(skip);
-        if (limit > 0) query = query.Take(limit);
-        return query;
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : pageSize;
+
+        var dbSetQueryable = BuildQuery(predicate, includes, orderBy, true);
+
+        var totalRecords = await dbSetQueryable.CountAsync(cancellationToken);
+
+        var items = await dbSetQueryable
+            .AsSplitQuery()
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ProjectToType<TResult>()
+            .ToListAsync(cancellationToken);
+
+        return (items, totalRecords);
     }
 
-    //protected static IQueryable<TEntity> ApplyDateFilters<TQuery>(IQueryable<TEntity> query, TQuery queryDto) where TQuery : BaseQueryDto
-    //{
-    //    if (queryDto.CreatedAt != null && queryDto.CreatedAt != default)
-    //    {
-    //        var dateQuery = queryDto.CreatedAt.DatetimeQuery();
-    //        if (dateQuery != null)
-    //        {
-    //            query = query.Where(x => x.CreatedAt >= dateQuery.StartDateAt && x.CreatedAt <= dateQuery.EndDateAt);
-    //        }
-    //    }
+    public virtual async Task<(List<T>, int)> GetDtPaginationAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        string? orderStatement = null,
+        int page = 0,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    )
+    {
+        page = page < 0 ? 0 : page;
+        pageSize = pageSize is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : pageSize;
 
-    //    if (queryDto.CreateAtFrom != null && queryDto.CreateAtFrom != default)
-    //    {
-    //        var dateQuery = queryDto.CreateAtFrom.DatetimeQuery();
-    //        if (dateQuery != null)
-    //        {
-    //            query = query.Where(x => x.CreatedAt >= dateQuery.StartDateAt);
-    //        }
-    //    }
+        var dbSetQueryable = BuildQuery(predicate, includes, CustomOrderBy, true);
 
-    //    if (queryDto.CreateAtTo != null && queryDto.CreateAtTo != default)
-    //    {
-    //        var dateQuery = queryDto.CreateAtTo.DatetimeQuery();
-    //        if (dateQuery != null)
-    //        {
-    //            query = query.Where(x => x.CreatedAt <= dateQuery.EndDateAt);
-    //        }
-    //    }
+        var totalRecords = await dbSetQueryable.CountAsync(cancellationToken);
 
-    //    return query;
-    //}
+        var items = await dbSetQueryable
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalRecords);
+
+        IOrderedQueryable<T> CustomOrderBy(IQueryable<T> q)
+        {
+            //if (!string.IsNullOrWhiteSpace(orderStatement)) return q.OrderBy(orderStatement);
+
+            return typeof(ICreationAuditedEntity).IsAssignableFrom(typeof(T))
+                ? q.OrderByDescending(x => EF.Property<DateTime>(x, nameof(ICreationAuditedEntity.CreatedAt)))
+                : q.OrderByDescending(x => x.Id);
+        }
+    }
+
+
+    public virtual async Task<(List<TResult>, int)> GetDtPaginationAsync<TResult>(
+        Expression<Func<T, bool>>? predicate = null,
+        List<string>? includes = null,
+        string? orderStatement = null,
+        int page = 0,
+        int pageSize = AppConstants.DefaultPageSize,
+        CancellationToken cancellationToken = default
+    )
+    {
+        page = page < 0 ? 0 : page;
+        pageSize = pageSize is < 1 or > AppConstants.MaxPageSize ? AppConstants.DefaultPageSize : pageSize;
+
+        var dbSetQueryable = BuildQuery(predicate, includes, CustomOrderBy, true);
+
+        var totalRecords = await dbSetQueryable.CountAsync(cancellationToken);
+
+        var items = await dbSetQueryable
+            .AsSplitQuery()
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .ProjectToType<TResult>()
+            .ToListAsync(cancellationToken);
+
+        return (items, totalRecords);
+
+        IOrderedQueryable<T> CustomOrderBy(IQueryable<T> q)
+        {
+            //if (!string.IsNullOrWhiteSpace(orderStatement)) return q.OrderBy(orderStatement);
+
+            return typeof(ICreationAuditedEntity).IsAssignableFrom(typeof(T))
+                ? q.OrderByDescending(x => EF.Property<DateTime>(x, nameof(ICreationAuditedEntity.CreatedAt)))
+                : q.OrderByDescending(x => x.Id);
+        }
+    }
+
+    #endregion
+
+    #region ==================== UTILITIES ====================
+
+    protected virtual Func<IQueryable<T>, IQueryable<T>>? GetInclude(List<string> includePaths)
+    {
+        if (includePaths.Count == 0) return null;
+
+        return q =>
+        {
+            // Làm sạch + khử trùng chính tả (giữ Ordinal để bắt typo)
+            var paths = includePaths
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .Select(p => p.Trim())
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            var query = paths.Aggregate(q, (cur, path) => cur.Include(path));
+
+            var rootCount = paths
+                .Select(p =>
+                {
+                    var dot = p.IndexOf('.');
+                    return dot >= 0 ? p[..dot] : p;
+                })
+                .Distinct(StringComparer.Ordinal)
+                .Count();
+
+            // Rule: nếu có >= 2 root Includes thì tách query để tránh cartesian explosion
+            if (rootCount >= 2) query = query.AsSplitQuery();
+
+            return query;
+        };
+    }
+
+    protected virtual IQueryable<T> BuildQuery(
+        Expression<Func<T, bool>>? predicate,
+        List<string>? includes,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy,
+        bool asNoTracking = false
+    )
+    {
+        var dbSetQueryable = asNoTracking ? AsNoTracking() : AsQueryable();
+
+        var includeFunc = GetInclude(includes ?? []);
+        if (includeFunc != null) dbSetQueryable = includeFunc(dbSetQueryable);
+
+        if (predicate != null) dbSetQueryable = dbSetQueryable.Where(predicate);
+
+        return orderBy != null ? orderBy(dbSetQueryable) : dbSetQueryable.OrderByDescending(x => x.Id);
+    }
+
+    protected ApplicationDbContext GetDbContext()
+    {
+        if (_dbContext is ApplicationDbContext dbContext) return dbContext;
+
+        throw new InvalidOperationException($"DbContext is not a {nameof(ApplicationDbContext)}.");
+    }
+
+    public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 
     #endregion
 }

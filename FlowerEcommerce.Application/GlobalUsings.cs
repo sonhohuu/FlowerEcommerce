@@ -14,3 +14,7 @@ global using FluentValidation;
 global using Microsoft.Extensions.DependencyInjection;
 global using FlowerEcommerce.Application.Common.Models;
 global using FlowerEcommerce.Domain.Entities;
+global using Mapster;
+global using FlowerEcommerce.Application.Handlers.Products.Queries.GetProducts;
+global using FlowerEcommerce.Application.Common.Constants;
+global using FlowerEcommerce.Application.Interfaces.Paginate;

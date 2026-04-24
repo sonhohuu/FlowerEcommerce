@@ -1,16 +1,18 @@
-using FlowerEcommerce.Infrastructure.Persistence.Database;
-using Microsoft.EntityFrameworkCore;
+using FlowerEcommerce.API.Middlewares;
+using FlowerEcommerce.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+// Add logging
+builder.Logging.AddConsole();
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new()
@@ -18,6 +20,14 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Flower Ecommerce API",
         Version = "v1"
     });
+});
+
+// Add API versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    options.ReportApiVersions = true;
 });
 
 var app = builder.Build();
@@ -28,6 +38,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Add custom middleware
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -4,7 +4,6 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<UnitOfWork> _logger;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private IDbContextTransaction? _transaction;
 
     // Cache repositories to avoid creating multiple instances for the same entity type
@@ -15,7 +14,6 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
         _logger = logger;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     #region Repository Access
@@ -33,7 +31,7 @@ public class UnitOfWork : IUnitOfWork
             return (IBaseRepository<TEntity>)existingRepo;
         }
 
-        var repository = new BaseRepository<TEntity>(_context, _httpContextAccessor);
+        var repository = new BaseRepository<TEntity>(_context);
         _repositories.TryAdd(entityType, repository);
         return repository;
     }

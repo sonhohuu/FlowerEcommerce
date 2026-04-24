@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace FlowerEcommerce.Application.Handlers.Products.Commands.DeleteProduct;
 
-namespace FlowerEcommerce.Application.Handlers.Products.Commands.DeleteProduct
+public record DeleteProductCommand : IRequest<TResult>
 {
-    internal class DeleteProductCommand
-    {
-    }
+    public required ulong Id { get; init; }
 }
