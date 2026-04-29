@@ -1,0 +1,351 @@
+﻿@page
+@model FlowerEcommerce.View.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Tất cả sản phẩm";
+}
+
+@section Styles {
+    <style>
+        /* ── Breadcrumb ── */
+        .breadcrumb {
+            padding: 12px 40px;
+            font-size: 14px;
+            color: #555;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+            .breadcrumb a {
+                color: #555;
+                text-decoration: none;
+            }
+
+                .breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+            .breadcrumb .active {
+                color: #1a8cff;
+                font-weight: 600;
+            }
+
+        /* ── Layout ── */
+        .shop-wrapper {
+            display: flex;
+            max-width: 1280px;
+            margin: 32px auto;
+            padding: 0 24px;
+            gap: 40px;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+        }
+
+            .sidebar h3 {
+                font-family: 'Oswald', sans-serif;
+                font-size: 15px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: #111;
+                margin-bottom: 18px;
+                border-bottom: 2px solid #111;
+                padding-bottom: 10px;
+            }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+                .sidebar ul li {
+                    border-bottom: 1px solid #ebebeb;
+                }
+
+                    .sidebar ul li a {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 12px 4px;
+                        font-size: 14px;
+                        color: #333;
+                        text-decoration: none;
+                        transition: color 0.2s;
+                    }
+
+                        .sidebar ul li a:hover {
+                            color: #1a8cff;
+                        }
+
+                        .sidebar ul li a .arrow {
+                            font-size: 11px;
+                            color: #aaa;
+                        }
+
+        /* ── Product Grid ── */
+        .product-section {
+            flex: 1;
+        }
+
+        .product-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+            .product-section-header h2 {
+                font-family: 'Oswald', sans-serif;
+                font-size: 20px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: #111;
+                margin: 0;
+            }
+
+        .sort-select {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        /* ── Product Card ── */
+        .product-card {
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+            .product-card:hover {
+                box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+                transform: translateY(-3px);
+            }
+
+        .product-card-img {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #f9f9f9;
+        }
+
+            .product-card-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s;
+            }
+
+        .product-card:hover .product-card-img img {
+            transform: scale(1.05);
+        }
+
+        .product-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #e63b3b;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+
+        .product-card-body {
+            padding: 14px 16px;
+        }
+
+            .product-card-body h4 {
+                font-size: 14px;
+                font-weight: 600;
+                color: #222;
+                margin: 0 0 8px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-new {
+            font-size: 15px;
+            font-weight: 700;
+            color: #e63b3b;
+        }
+
+        .price-old {
+            font-size: 13px;
+            color: #aaa;
+            text-decoration: line-through;
+        }
+
+        .price-contact {
+            font-size: 14px;
+            color: #e63b3b;
+            font-weight: 600;
+        }
+
+        .btn-add-cart {
+            margin-top: 12px;
+            width: 100%;
+            padding: 9px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-add-cart:hover {
+                background: #1a8cff;
+            }
+
+        /* ── Pagination ── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 40px;
+        }
+
+            .pagination a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+                color: #333;
+                text-decoration: none;
+                transition: all 0.2s;
+            }
+
+                .pagination a.active, .pagination a:hover {
+                    background: #111;
+                    color: #fff;
+                    border-color: #111;
+                }
+    </style>
+}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Trang chủ</a> &gt; <span class="active">Tất cả sản phẩm</span>
+</div>
+
+<div class="shop-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h3>Danh mục sản phẩm</h3>
+        <ul>
+            <li>
+                <a href="?category=can-cau-tay">Cần Câu Tay</a>
+            </li>
+            <li><a href="?category=can-cau-may">Cần Câu Máy</a>
+                <li><a href="?category=can-cau-lure">Cần Câu Lure</a>
+        </ul>
+    </aside>
+
+    <!-- Products -->
+    <section class="product-section">
+        <div class="product-section-header">
+            <h2>Tất cả sản phẩm</h2>
+            <select class="sort-select" onchange="sortProducts(this.value)">
+                <option value="default">Mặc định</option>
+                <option value="price-asc">Giá tăng dần</option>
+                <option value="price-desc">Giá giảm dần</option>
+                <option value="newest">Mới nhất</option>
+            </select>
+        </div>
+
+        <div class="product-grid" id="product-grid">
+
+            @foreach (var p in Model.Products)
+            {
+                <a class="product-card-link" href="/Products/@p.Id">
+                <div class="product-card">
+                    <div class="product-card-img">
+                        <img src="@p.ImageUrl" alt="@p.Name" />
+                        @if (p.DiscountPercent.HasValue)
+                        {
+                            <span class="badge">-@p.DiscountPercent%</span>
+                        }
+                    </div>
+                    <div class="product-card-body">
+                        <h4>@p.Name</h4>
+                        <div class="price-row">
+                            @if (p.IsContactPrice)
+                            {
+                                <span class="price-contact">Liên hệ</span>
+                            }
+                            else
+                            {
+                                <span class="price-new">@p.Price.ToString("N0")đ</span>
+                                @if (p.OriginalPrice.HasValue)
+                                {
+                                    <span class="price-old">@p.OriginalPrice.Value.ToString("N0")đ</span>
+                                }
+                            }
+                        </div>
+                        <button class="btn-add-cart"
+                                onclick='event.preventDefault(); event.stopPropagation(); addToCart(@p.Id, "@p.Name", @(p.IsContactPrice ? 0 : p.Price), "@p.ImageUrl")'>
+                            Thêm vào giỏ
+                        </button>
+                    </div>
+                </div>
+                </a>
+            }
+
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="?page=@i" class="@(i == Model.CurrentPage ? "active" : "")">@i</a>
+            }
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        function sortProducts(value) {
+            window.location.href = '?sort=' + value;
+        }
+    </script>
+}
+

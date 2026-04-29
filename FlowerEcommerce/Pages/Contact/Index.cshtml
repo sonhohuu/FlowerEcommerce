@@ -1,0 +1,250 @@
+﻿@page
+@model FlowerEcommerce.View.Pages.Contact.IndexModel
+@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+@section Styles {
+    <style>
+        .breadcrumb {
+            padding: 12px 40px;
+            font-size: 14px;
+            color: #555;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+            .breadcrumb a {
+                color: #555;
+                text-decoration: none;
+            }
+
+                .breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+            .breadcrumb .active {
+                color: #1a8cff;
+                font-weight: 600;
+            }
+
+        .contact-wrapper {
+            max-width: 1100px;
+            margin: 48px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+        }
+
+        /* ── Left: Info + Form ── */
+        .contact-info h2,
+        .contact-form-section h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #111;
+            margin: 0 0 20px;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+            .contact-detail .ci {
+                font-size: 17px;
+                flex-shrink: 0;
+            }
+
+        .contact-divider {
+            border: none;
+            border-top: 1px solid #ebebeb;
+            margin: 28px 0;
+        }
+
+        /* ── Form ── */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+            .form-group input,
+            .form-group textarea {
+                width: 100%;
+                padding: 12px 14px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+                font-family: 'Source Sans 3', sans-serif;
+                color: #333;
+                background: #fff;
+                box-sizing: border-box;
+                transition: border-color 0.2s;
+                resize: vertical;
+            }
+
+                .form-group input:focus,
+                .form-group textarea:focus {
+                    outline: none;
+                    border-color: #1a8cff;
+                    box-shadow: 0 0 0 3px rgba(26,140,255,0.08);
+                }
+
+            .form-group textarea {
+                min-height: 130px;
+            }
+
+        .btn-submit {
+            padding: 13px 32px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Source Sans 3', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-submit:hover {
+                background: #1a8cff;
+            }
+
+        /* Success message */
+        .alert-success {
+            background: #eafaf1;
+            border: 1px solid #a3d9b1;
+            color: #207a4a;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .alert-danger {
+            background: #fff0f0;
+            border: 1px solid #f5c6c6;
+            color: #a32020;
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* ── Map ── */
+        .map-container {
+            width: 100%;
+            height: 420px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+            .map-container iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+        @@media (max-width: 768px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .map-container {
+                height: 280px;
+            }
+        }
+    </style>
+}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Trang chủ</a> &gt; <span class="active">Liên hệ</span>
+</div>
+
+<div class="contact-wrapper">
+
+    <!-- LEFT: Company info + Form -->
+    <div>
+        <div class="contact-info">
+            <h2>Công ty TNHH CanCau VoDich</h2>
+
+            <div class="contact-detail">
+                <span class="ci">📍</span>
+                <span>Địa chỉ: Tầng 6 - Tòa nhà Ladeco - 266 Đội Cấn, Hà Nội</span>
+            </div>
+            <div class="contact-detail">
+                <span class="ci">✉️</span>
+                <span>Email: <a href="mailto:hhson@@gmail.com.vn">hhson@@gmail.com.vn</a></span>
+            </div>
+            <div class="contact-detail">
+                <span class="ci">📞</span>
+                <span>Hotline: <strong>1900 0000</strong></span>
+            </div>
+        </div>
+
+        <hr class="contact-divider" />
+
+        <div class="contact-form-section">
+            <h2>Liên hệ với chúng tôi</h2>
+
+            @if (Model.IsSubmitted)
+            {
+                <div class="alert-success">
+                    ✅ Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.
+                </div>
+            }
+
+            @if (!ModelState.IsValid && Model.IsSubmitted == false && Request.Method == "POST")
+            {
+                <div class="alert-danger">Vui lòng điền đầy đủ các trường bắt buộc.</div>
+            }
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <input asp-for="Contact.FullName" type="text" placeholder="Họ và tên" />
+                    <span asp-validation-for="Contact.FullName" class="text-danger" style="font-size:12px;"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Contact.Email" type="email" placeholder="Email" />
+                    <span asp-validation-for="Contact.Email" class="text-danger" style="font-size:12px;"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Contact.Phone" type="tel" placeholder="Điện thoại *" />
+                    <span asp-validation-for="Contact.Phone" class="text-danger" style="font-size:12px;"></span>
+                </div>
+                <div class="form-group">
+                    <textarea asp-for="Contact.Message" placeholder="Nội dung"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Gửi thông tin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RIGHT: Map -->
+    <div>
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0!2d105.8297!3d21.0285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab9bd9861ca1%3A0xe7887f7b72ca17a9!2zMjY2IMSQb-G7mWkgQ-G6p24sIEPhu5FuZyBW4buFLCBOZ-G7jWMgSMOgLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1700000000000"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Bản đồ CanCau Shop">
+            </iframe>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

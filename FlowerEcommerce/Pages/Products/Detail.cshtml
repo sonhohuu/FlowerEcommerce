@@ -1,0 +1,607 @@
+﻿@page "{id:int}"
+@model FlowerEcommerce.View.Pages.Products.DetailModel
+@{
+    ViewData["Title"] = Model.Product?.Name ?? "Chi tiết sản phẩm";
+    var p = Model.Product;
+}
+
+@section Styles {
+    <style>
+        .breadcrumb {
+            padding: 12px 40px;
+            font-size: 14px;
+            color: #555;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+            .breadcrumb a {
+                color: #555;
+                text-decoration: none;
+            }
+
+                .breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+            .breadcrumb .active {
+                color: #e55a00;
+                font-weight: 600;
+            }
+
+        /* ── Detail Wrapper ── */
+        .detail-wrapper {
+            max-width: 1200px;
+            margin: 36px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 56px;
+        }
+
+        /* ── Gallery ── */
+        .gallery {
+            position: relative;
+        }
+
+        .gallery-main {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+            .gallery-main img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                transition: opacity 0.25s;
+            }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.35);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 2;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .gallery-nav:hover {
+                background: rgba(0,0,0,0.6);
+            }
+
+            .gallery-nav.prev {
+                left: 10px;
+            }
+
+            .gallery-nav.next {
+                right: 10px;
+            }
+
+        .gallery-thumbs {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+            .gallery-thumbs img {
+                width: 72px;
+                height: 72px;
+                object-fit: cover;
+                border: 2px solid #e5e5e5;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: border-color 0.2s;
+            }
+
+                .gallery-thumbs img.active,
+                .gallery-thumbs img:hover {
+                    border-color: #e55a00;
+                }
+
+        /* ── Product Info ── */
+        .product-info h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #111;
+            text-transform: uppercase;
+            line-height: 1.4;
+            margin: 0 0 16px;
+        }
+
+        .product-info hr {
+            border: none;
+            border-top: 1px solid #e5e5e5;
+            margin: 18px 0;
+        }
+
+        /* Price */
+        .price-block {
+            margin-bottom: 16px;
+        }
+
+        .price-label {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .price-main {
+            font-size: 26px;
+            font-weight: 700;
+            color: #e55a00;
+        }
+
+            .price-main.out-of-stock {
+                color: #e55a00;
+            }
+
+        .price-original {
+            font-size: 14px;
+            color: #aaa;
+            text-decoration: line-through;
+            margin-left: 8px;
+        }
+
+        /* Meta */
+        .meta-row {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 6px;
+        }
+
+            .meta-row .label {
+                font-weight: 600;
+                color: #222;
+                min-width: 110px;
+                flex-shrink: 0;
+            }
+
+            .meta-row .val-link {
+                color: #1a8cff;
+            }
+
+        /* Specs table */
+        .specs-block {
+            background: #f8f8f8;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 13.5px;
+            color: #444;
+            line-height: 2;
+        }
+
+            .specs-block b {
+                color: #222;
+            }
+
+        /* Size price table */
+        .size-table {
+            font-size: 13.5px;
+            color: #555;
+            margin: 8px 0 16px;
+            line-height: 1.9;
+        }
+
+            .size-table .title {
+                font-weight: 700;
+                color: #222;
+                margin-bottom: 4px;
+            }
+
+            .size-table .note {
+                color: #e55a00;
+                font-size: 13px;
+                margin-top: 8px;
+                font-style: italic;
+            }
+
+        /* Address */
+        .contact-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+            .contact-row .icon {
+                font-size: 15px;
+            }
+
+        /* Qty + Buttons */
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .qty-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+            .qty-control button {
+                width: 34px;
+                height: 40px;
+                background: #f3f3f3;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                color: #444;
+                transition: background 0.15s;
+            }
+
+                .qty-control button:hover {
+                    background: #e5e5e5;
+                }
+
+            .qty-control input {
+                width: 46px;
+                height: 40px;
+                border: none;
+                border-left: 1px solid #ddd;
+                border-right: 1px solid #ddd;
+                text-align: center;
+                font-size: 14px;
+                font-weight: 600;
+                color: #222;
+            }
+
+        .btn-buy {
+            padding: 11px 26px;
+            background: #e55a00;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+            .btn-buy:hover {
+                background: #c44e00;
+            }
+
+        .btn-cart {
+            padding: 11px 26px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+            .btn-cart:hover {
+                background: #218838;
+            }
+
+        .btn-hotline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 18px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* ── Related Products ── */
+        .related-section {
+            max-width: 1200px;
+            margin: 48px auto 56px;
+            padding: 0 24px;
+        }
+
+            .related-section h2 {
+                font-family: 'Oswald', sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: #111;
+                margin-bottom: 24px;
+                padding-bottom: 10px;
+                border-bottom: 3px solid #e55a00;
+                display: inline-block;
+            }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 18px;
+        }
+
+        .related-card {
+            border: 1px solid #ebebeb;
+            border-radius: 6px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+            .related-card:hover {
+                box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+                transform: translateY(-3px);
+            }
+
+            .related-card img {
+                width: 100%;
+                aspect-ratio: 1 / 1;
+                object-fit: cover;
+                background: #f5f5f5;
+            }
+
+        .related-card-body {
+            padding: 10px 12px;
+        }
+
+            .related-card-body p {
+                font-size: 13px;
+                color: #333;
+                margin: 0 0 6px;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .related-card-body .price {
+                font-size: 14px;
+                font-weight: 700;
+                color: #e55a00;
+            }
+
+        @@media (max-width: 900px) {
+            .detail-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .related-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Trang chủ</a> &gt;
+    <a href="/SanPham">Sản phẩm</a> &gt;
+    @if (p?.Category != null)
+    {
+        <a href="/Products?category=@p.CategorySlug">@p.Category</a><span> &gt; </span>
+    }
+    <span class="active">@p?.Name</span>
+</div>
+
+@if (p == null)
+{
+    <div style="text-align:center;padding:80px 24px;">
+        <h2 style="color:#aaa;">Không tìm thấy sản phẩm</h2>
+        <a href="/Products" style="color:#1a8cff;">← Quay lại danh sách sản phẩm</a>
+    </div>
+}
+else
+{
+    <div class="detail-wrapper">
+        <!-- GALLERY -->
+        <div class="gallery">
+            <div class="gallery-main">
+                <button class="gallery-nav prev" onclick="changeImg(-1)">&#8249;</button>
+                <img id="main-img" src="@p.Images[0]" alt="@p.Name" />
+                <button class="gallery-nav next" onclick="changeImg(1)">&#8250;</button>
+            </div>
+            <div class="gallery-thumbs">
+                @for (int i = 0; i < p.Images.Count; i++)
+                {
+                    <img src="@p.Images[i]"
+                         alt="@p.Name ảnh @(i + 1)"
+                         class="@(i == 0 ? "active" : "")"
+                         onclick="setImg(@i)" />
+                }
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="product-info">
+            <h1>@p.Name</h1>
+            <hr />
+
+            <!-- Price -->
+            <div class="price-block">
+                <div class="price-label">Giá bán</div>
+                @if (p.IsOutOfStock)
+                {
+                    <span class="price-main out-of-stock">Hết hàng</span>
+                    @if (p.OriginalPrice.HasValue)
+                    {
+                        <span class="price-original">Giá cũ: @p.OriginalPrice.Value.ToString("N0")đ</span>
+                    }
+                }
+                else if (p.IsContactPrice)
+                {
+                    <span class="price-main">Liên hệ</span>
+                }
+                else
+                {
+                    <span class="price-main">@p.Price.ToString("N0")đ</span>
+                    @if (p.OriginalPrice.HasValue)
+                    {
+                        <span class="price-original">@p.OriginalPrice.Value.ToString("N0")đ</span>
+                    }
+                }
+            </div>
+
+            <!-- Meta -->
+            <div class="meta-row">
+                <span class="label">Mã sản phẩm:</span>
+                <span><b>@p.Sku</b></span>
+            </div>
+            <div class="meta-row">
+                <span class="label">Tình trạng:</span>
+                <span class="val-link">@(p.IsOutOfStock ? "Hết hàng" : "Còn hàng")</span>
+            </div>
+
+            <hr />
+
+            <!-- Description -->
+            @if (!string.IsNullOrWhiteSpace(p.Description))
+            {
+                <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:10px;">Mô tả:</div>
+                <div class="specs-block">@Html.Raw(p.Description)</div>
+            }
+
+            <!-- Size price table -->
+            @if (p.SizePrices.Any())
+            {
+                <div class="size-table">
+                    <div class="title">Bảng giá các size cần: (Thông số cần xem phía dưới nhé)</div>
+                    @foreach (var sp in p.SizePrices)
+                    {
+                        <div>@sp.Label - giá @sp.Price.ToString("N0")đ</div>
+                    }
+                    <div class="note">
+                        - Hiện tại website chưa chọn được size khi đặt hàng, quý khách hàng đặt hàng có thể ghi chú chọn size,
+                        hoặc quyas khách hàng cứ đặt hàng một size nào nó, chúng tôi sẽ liên hệ lại tư vấn và chọn size cho quý khách.
+                    </div>
+                </div>
+            }
+
+            <!-- Address -->
+            <div class="contact-row">
+                <span class="icon">🏪</span>
+                <span>Địa chỉ: 1/15 Đường TA05 - Thới An - Quận 12 - TP.HCM</span>
+            </div>
+            <div class="contact-row">
+                <span class="icon">📞</span>
+                <span>Điện thoại: <b>0987 926 535</b></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="action-row">
+                <span class="qty-label">Số lượng</span>
+                <div class="qty-control">
+                    <button onclick="changeQty(-1)">−</button>
+                    <input type="number" id="qty-input" value="1" min="1" max="99" />
+                    <button onclick="changeQty(1)">+</button>
+                </div>
+                <button class="btn-buy" onclick="buyNow()">Mua ngay</button>
+                <button class="btn-cart"
+                        onclick='addToCart(@p.Id, "@p.Name", @(p.IsContactPrice || p.IsOutOfStock ? 0 : p.Price), "@p.Images[0]")'>
+                    Thêm vào giỏ hàng
+                </button>
+                <button class="btn-hotline">📞 HOTLINE: 0987 926 535</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RELATED PRODUCTS -->
+    @if (Model.RelatedProducts.Any())
+    {
+        <div class="related-section">
+            <h2>Sản phẩm khác cùng loại</h2>
+            <div class="related-grid">
+                @foreach (var rp in Model.RelatedProducts)
+                {
+                    <a class="related-card" href="/Products/@rp.Id">
+                        <img src="@rp.ImageUrl" alt="@rp.Name" />
+                        <div class="related-card-body">
+                            <p>@rp.Name</p>
+                            <div class="price">
+                                @if (rp.IsContactPrice)
+                                {
+                                    <span>Liên hệ</span>
+                                }
+                                else
+                                {
+
+                                    <span>@rp.Price.ToString("N0")đ</span>
+                                }
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        const images = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Images ?? new List<string>()));
+        let currentIdx = 0;
+
+        function setImg(idx) {
+            currentIdx = idx;
+            document.getElementById('main-img').src = images[idx];
+            document.querySelectorAll('.gallery-thumbs img').forEach((el, i) => {
+                el.classList.toggle('active', i === idx);
+            });
+        }
+
+        function changeImg(dir) {
+            let next = (currentIdx + dir + images.length) % images.length;
+            setImg(next);
+        }
+
+        function changeQty(dir) {
+            const inp = document.getElementById('qty-input');
+            let v = parseInt(inp.value) + dir;
+            inp.value = Math.max(1, Math.min(99, v));
+        }
+
+        function buyNow() {
+            const qty = parseInt(document.getElementById('qty-input').value);
+            // TODO: redirect to checkout with product + qty
+            showToast('Đang chuyển đến thanh toán...');
+            setTimeout(() => window.location.href = '/Checkout', 800);
+        }
+    </script>
+}

@@ -1,52 +1,127 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FlowerEcommerce</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/FlowerEcommerce.styles.css" asp-append-version="true" />
+    <title>CanCauVoDich — Trang chủ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">FlowerEcommerce</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+ 
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div>Hotline: <strong>1900 0000</strong> &nbsp;|&nbsp; Email: hhson@gmail.com.vn</div>
+        <div>
+            <a href="#">Đăng nhập</a>
+            <a href="#">Đăng ký</a>
+            <a href="#">Liên hệ</a>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - FlowerEcommerce - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">
+            <span class="logo-your">CanCau</span>&nbsp;<span class="logo-shop">SHOP</span>
         </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="nav-links">
+            <a href="/">Trang chủ</a>
+            <a href="/Introduction">Giới thiệu</a>
+            <a href="/Products">Sản phẩm ▾</a>
+            <a href="/Contact">Liên hệ</a>
+            <a href="/News">Tin tức</a>
+        </div>
+        <div class="nav-icons">
+            <button onclick="toggleSearch()" title="Tìm kiếm">🔍</button>
+            <button onclick="toggleCart()" title="Giỏ hàng">
+                🛒<span class="cart-badge" id="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar" id="search-bar">
+        <input type="text" placeholder="Tìm kiếm sản phẩm..." id="search-input" />
+        <button class="search-close" onclick="toggleSearch()">✕</button>
+    </div>
+ 
+<!-- MAIN CONTENT -->
+<main>
+    @RenderBody()
+</main>
+<!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Về chúng tôi</h4>
+                <a href="#">Trang chủ</a>
+                <a href="#">Giới thiệu</a>
+                <a href="#">Sản phẩm</a>
+                <a href="#">Liên hệ</a>
+                <a href="#">Tin tức</a>
+            </div>
+            <div class="footer-col">
+                <h4>Chính sách</h4>
+                <a href="#">Chính sách đổi trả</a>
+                <a href="#">Chính sách vận chuyển</a>
+                <a href="#">Bảo mật thông tin</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Hướng dẫn mua hàng</a>
+            </div>
+            <div class="footer-col">
+                <h4>Hỗ trợ khách hàng</h4>
+                <a href="#">Trang chủ</a>
+                <a href="#">Giới thiệu</a>
+                <a href="#">Sản phẩm</a>
+                <a href="#">Liên hệ</a>
+                <a href="#">Tin tức</a>
+            </div>
+            <div class="footer-col">
+                <h4>Đăng ký nhận khuyến mãi</h4>
+                <div class="email-row">
+                    <input class="email-input" type="email" placeholder="Nhập địa chỉ email" />
+                    <button class="email-btn">Đăng ký</button>
+                </div>
+                <h4 style="margin-top: 24px;">Theo dõi chúng tôi</h4>
+                <div class="social-icons">
+                    <a class="social-icon" href="#">𝕏</a>
+                    <a class="social-icon" href="#">f</a>
+                    <a class="social-icon" href="#">𝓟</a>
+                    <a class="social-icon" href="#">G</a>
+                    <a class="social-icon" href="#">▶</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Cancau Shop</div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- CART OVERLAY + PANEL -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-panel" id="cart-panel">
+        <div class="cart-header">
+            <h3>🛒 Giỏ hàng của bạn</h3>
+            <button class="cart-close" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items-list"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Tổng cộng</span>
+                <span id="cart-total-price">0đ</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Thanh toán ngay →</button>
+        </div>
+    </div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+<script src="~/js/site.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

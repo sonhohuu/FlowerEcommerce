@@ -1,10 +1,175 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Trang Chu - HoaCau Fishing Store";
+    ViewData["ActivePage"] = "Home";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+ 
+<!-- BANNER -->
+<div class="banner">
+    <div class="banner-content">
+        <div class="banner-discount">GIẢM 70%</div>
+        <div class="banner-sub">Cùng nhiều quà tặng hấp dẫn</div>
+        <button class="banner-btn" onclick="document.getElementById('new-section').scrollIntoView({behavior:'smooth'})">MUA NGAY</button>
+    </div>
+    <div class="banner-deco">🛍️</div>
+    <div class="banner-card">💳 &nbsp;CREDIT CARD ACCEPTED</div>
+    <div class="banner-shape"></div>
 </div>
+
+<!-- SẢN PHẨM MỚI -->
+<div class="section" id="new-section">
+    <div class="section-title">Sản phẩm mới</div>
+    <div class="section-divider"></div>
+    <div class="product-grid" id="new-products"></div>
+</div>
+
+<!-- SẢN PHẨM NỔI BẬT -->
+<div class="section">
+    <div class="section-title">Sản phẩm nổi bật</div>
+    <div class="section-divider"></div>
+    <div class="product-grid" id="featured-products"></div>
+</div>
+ 
+@section Scripts {
+    <script>
+        /* ── DATA ── */
+        const products = [
+          { id:1,  name:"Nước hoa DG Tweety",        emoji:"🧴", price:100000, oldPrice:150000, isNew:true,  featured:false, badge:"-33%"  },
+          { id:2,  name:"Túi nhỏ nhắn mặt quỷ",      emoji:"👜", price:168000, oldPrice:null,   isNew:true,  featured:false, badge:null     },
+          { id:3,  name:"Quà tặng chocolate Vimax",   emoji:"🍫", price:600000, oldPrice:null,   isNew:true,  featured:false, badge:null     },
+          { id:4,  name:"Vali đẹp cute",              emoji:"🧳", price:800000, oldPrice:null,   isNew:true,  featured:true,  badge:null     },
+          { id:5,  name:"Áo khoác da cao cấp",        emoji:"🧥", price:1200000,oldPrice:1800000,isNew:false, featured:true,  badge:"-33%"  },
+          { id:6,  name:"Giày sneaker thể thao",      emoji:"👟", price:950000, oldPrice:null,   isNew:false, featured:true,  badge:null     },
+          { id:7,  name:"Kính mắt thời trang",        emoji:"🕶️",price:350000, oldPrice:null,   isNew:false, featured:true,  badge:null     },
+          { id:8,  name:"Bộ trang sức bạc",           emoji:"💍", price:780000, oldPrice:1100000,isNew:false, featured:true,  badge:"-29%"  },
+          { id:9,  name:"Mũ bucket trendy",           emoji:"🧢", price:220000, oldPrice:null,   isNew:true,  featured:false, badge:"NEW"    },
+          { id:10, name:"Ví da nam thật",             emoji:"👛", price:480000, oldPrice:null,   isNew:true,  featured:false, badge:null     },
+          { id:11, name:"Đồng hồ thông minh",         emoji:"⌚", price:2500000,oldPrice:null,   isNew:false, featured:true,  badge:"HOT"   },
+          { id:12, name:"Dây chuyền vàng 18K",        emoji:"📿", price:3200000,oldPrice:4000000,isNew:false, featured:true,  badge:"-20%"  },
+        ];
+
+        let cart = {};
+
+        /* ── HELPERS ── */
+        const fmt = n => n.toLocaleString('vi-VN') + 'đ';
+
+        /* ── RENDER PRODUCTS ── */
+        function renderProducts(list, containerId) {
+          const el = document.getElementById(containerId);
+          el.innerHTML = list.map(p => `
+            <div class="product-card" onclick="addToCart(${p.id})">
+              ${p.badge ? `<div class="product-badge${p.badge==='NEW'?' badge-new':p.badge==='HOT'?' badge-hot':''}">${p.badge}</div>` : ''}
+              <div class="product-img">${p.emoji}</div>
+              <div class="card-actions">
+                <button class="btn-buy" onclick="event.stopPropagation();addToCart(${p.id})">Mua hàng</button>
+                <button class="btn-view" onclick="event.stopPropagation();viewProduct(${p.id})">Xem nhanh</button>
+              </div>
+              <div class="card-info">
+                <div class="card-name">${p.name}</div>
+                <div class="card-price">
+                  <span class="price-new">${fmt(p.price)}</span>
+                  ${p.oldPrice ? `<span class="price-old">${fmt(p.oldPrice)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        /* ── CART LOGIC ── */
+        function addToCart(id) {
+          const p = products.find(x => x.id === id);
+          if (!cart[id]) cart[id] = { ...p, qty: 0 };
+          cart[id].qty++;
+          refreshCart();
+          showToast('✅ Đã thêm "' + p.name + '" vào giỏ hàng!');
+        }
+
+        function removeFromCart(id) {
+          delete cart[id];
+          refreshCart();
+        }
+
+        function changeQty(id, delta) {
+          if (!cart[id]) return;
+          cart[id].qty += delta;
+          if (cart[id].qty <= 0) delete cart[id];
+          refreshCart();
+        }
+
+        function refreshCart() {
+          const items = Object.values(cart);
+          const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+          const count = items.reduce((s, i) => s + i.qty, 0);
+
+          document.getElementById('cart-count').textContent = count;
+          document.getElementById('cart-total-price').textContent = fmt(total);
+
+          const list = document.getElementById('cart-items-list');
+          if (items.length === 0) {
+            list.innerHTML = '<div class="empty-cart">🛒<br><br>Giỏ hàng đang trống<br><small>Hãy thêm sản phẩm vào giỏ!</small></div>';
+            return;
+          }
+          list.innerHTML = items.map(i => `
+            <div class="cart-item">
+              <div class="cart-item-emoji">${i.emoji}</div>
+              <div class="cart-item-info">
+                <div class="cart-item-name">${i.name}</div>
+                <div class="cart-item-price">${fmt(i.price)}</div>
+                <div class="qty-row">
+                  <button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button>
+                  <span class="qty-num">${i.qty}</span>
+                  <button class="qty-btn" onclick="changeQty(${i.id},1)">+</button>
+                  <small style="color:#aaa;font-size:11px;margin-left:4px;">= ${fmt(i.price * i.qty)}</small>
+                </div>
+              </div>
+              <button class="cart-remove" onclick="removeFromCart(${i.id})" title="Xoá">✕</button>
+            </div>
+          `).join('');
+        }
+
+        function checkout() {
+          if (Object.keys(cart).length === 0) { showToast('⚠️ Giỏ hàng đang trống!'); return; }
+          showToast('🎉 Đặt hàng thành công! Cảm ơn bạn.');
+          cart = {};
+          refreshCart();
+          toggleCart();
+        }
+
+        /* ── CART PANEL ── */
+        function toggleCart() {
+          document.getElementById('cart-panel').classList.toggle('open');
+          document.getElementById('cart-overlay').classList.toggle('open');
+        }
+
+        /* ── SEARCH ── */
+        function toggleSearch() {
+          const sb = document.getElementById('search-bar');
+          sb.classList.toggle('open');
+          if (sb.classList.contains('open')) {
+            setTimeout(() => document.getElementById('search-input').focus(), 200);
+          }
+        }
+
+        /* ── QUICK VIEW ── */
+        function viewProduct(id) {
+          const p = products.find(x => x.id === id);
+          alert(`${p.emoji} ${p.name}\nGiá: ${fmt(p.price)}${p.oldPrice ? '\nGiá gốc: ' + fmt(p.oldPrice) : ''}`);
+        }
+
+        /* ── TOAST ── */
+        let toastTimer;
+        function showToast(msg) {
+          const t = document.getElementById('toast');
+          t.textContent = msg;
+          t.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        /* ── INIT ── */
+        renderProducts(products.filter(p => p.isNew), 'new-products');
+        renderProducts(products.filter(p => p.featured), 'featured-products');
+        refreshCart();
+    </script>
+}
