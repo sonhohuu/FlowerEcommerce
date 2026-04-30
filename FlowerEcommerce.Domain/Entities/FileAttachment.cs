@@ -1,10 +1,17 @@
 ﻿namespace FlowerEcommerce.Domain.Entities;
-public class FileAttachment : CreationAuditedEntity
+public class FileAttachment : ModificationAuditedEntity
 {
-    public string FileName { get; set; } = null!;
-    public string FilePath { get; set; } = null!;
-    public string? ThumbnailPath { get; set; }
-    public string? ContentType { get; set; }
-    public long Size { get; set; }
-    public string? PublicUrl { get; set; } = null!;
+    // ── Cloudinary fields ─────────────────────────────────
+    public string PublicId { get; set; } = string.Empty;
+    public string SecureUrl { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string Format { get; set; } = string.Empty;
+    public int? Width { get; set; }
+    public int? Height { get; set; }
+    public long Bytes { get; set; }
+
+    // ── App metadata ──────────────────────────────────────
+    public bool IsMain { get; set; }
+    public int SortOrder { get; set; }
+    public string? AltText { get; set; }
 }

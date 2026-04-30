@@ -12,7 +12,7 @@ public class ProductController : BaseController
 {
     [HttpPost]
     public async Task<IActionResult> CreateProduct(
-        [FromBody] CreateProductCommand command,
+        [FromForm] CreateProductCommand command,
         CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);

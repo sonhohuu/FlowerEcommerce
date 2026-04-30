@@ -18,3 +18,4 @@ global using Mapster;
 global using FlowerEcommerce.Application.Handlers.Products.Queries.GetProducts;
 global using FlowerEcommerce.Application.Common.Constants;
 global using FlowerEcommerce.Application.Interfaces.Paginate;
+global using Microsoft.AspNetCore.Http;

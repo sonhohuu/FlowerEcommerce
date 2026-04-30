@@ -35,4 +35,8 @@ public static class MessageKey
     public const string CategoryNotFound = "Danh mục không tồn tại.";
     #endregion
 
+    #region Files
+    public const string ImageUploadFailed = "Tải lên hình ảnh thất bại.";
+    #endregion
+
 }

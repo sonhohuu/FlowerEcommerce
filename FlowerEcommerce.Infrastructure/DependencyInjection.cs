@@ -5,6 +5,7 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IServiceCollection services,
     IConfiguration configuration)
     {
+        services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SectionName));
         var connectionString = configuration.GetConnectionString(AppConstants.DbCsKey);
         services.AddScoped<AuditSaveChangesInterceptor>();
         services.AddDbContext<ApplicationDbContext>((sp, options) => options
@@ -22,5 +23,6 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork,UnitOfWork>();
         services.AddScoped<IDateTimeService, DateTimeService>();
+        services.AddScoped<ICloudinaryService, CloudinaryService>();
     }
 }

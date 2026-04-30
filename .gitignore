@@ -254,3 +254,7 @@ paket-files/
 # Custom project ignore files
 API/logs
 API/wwwroot
+
+node_modules/
+build/
+.env
