@@ -19,4 +19,6 @@ public interface ICloudinaryService
     Task<CloudinaryUploadResult> UploadFileAsync(IFormFile file, string? folder = null);
 
     Task<CloudinaryUploadResult> UploadFromBase64Async(string base64Data, string fileName, string? folder = null);
+
+    Task<bool> DeleteAsync(string publicId, ResourceType resourceType = ResourceType.Image);
 }

@@ -1,4 +1,6 @@
-﻿
+﻿using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
+
 namespace FlowerEcommerce.Infrastructure.Services;
 
 public class CloudinaryService : ICloudinaryService
@@ -130,6 +132,30 @@ public class CloudinaryService : ICloudinaryService
         }
     }
 
+    public async Task<bool> DeleteAsync(string publicId, Domain.Enums.ResourceType resourceType = Domain.Enums.ResourceType.Image)
+    {
+        try
+        {
+            var deleteParams = new DeletionParams(publicId)
+            {
+                ResourceType = MapResourceType(resourceType)
+            };
+
+            var result = await _cloudinary.DestroyAsync(deleteParams);
+            var ok = result.Result == "ok";
+
+            if (!ok)
+                _logger.LogWarning("Cloudinary delete returned: {Result} for publicId={Id}", result.Result, publicId);
+
+            return ok;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting resource {Id} from Cloudinary", publicId);
+            return false;
+        }
+    }
+
     private static CloudinaryUploadResult MapImageResult(ImageUploadResult r) =>
     new()
     {
@@ -145,4 +171,12 @@ public class CloudinaryService : ICloudinaryService
 
     private static CloudinaryUploadResult Fail(string msg) =>
         new() { Success = false, ErrorMessage = msg };
+
+    private static CloudinaryDotNet.Actions.ResourceType MapResourceType(Domain.Enums.ResourceType rt) =>
+        rt switch
+        {
+            Domain.Enums.ResourceType.Video => CloudinaryDotNet.Actions.ResourceType.Video,
+            Domain.Enums.ResourceType.Raw => CloudinaryDotNet.Actions.ResourceType.Raw,
+            _ => CloudinaryDotNet.Actions.ResourceType.Image
+        };
 }

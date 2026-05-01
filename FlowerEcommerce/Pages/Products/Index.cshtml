@@ -2,6 +2,14 @@
 @model FlowerEcommerce.View.Pages.Products.IndexModel
 @{
     ViewData["Title"] = "Tất cả sản phẩm";
+    var currentCategory = Request.Query["category"].ToString();
+    var currentSort = Request.Query["sort"].ToString();
+    var currentSearch = Request.Query["search"].ToString();
+
+    // Resolve the display name for the current category slug
+    var currentCategoryName = Model.Categories
+        .FirstOrDefault(c => c.Slug == currentCategory)?.Name
+        ?? "Tất cả sản phẩm";
 }
 
 @section Styles {
@@ -77,8 +85,10 @@
                         transition: color 0.2s;
                     }
 
-                        .sidebar ul li a:hover {
+                        .sidebar ul li a:hover,
+                        .sidebar ul li a.active-cat {
                             color: #1a8cff;
+                            font-weight: 600;
                         }
 
                         .sidebar ul li a .arrow {
@@ -175,6 +185,18 @@
             border-radius: 3px;
         }
 
+        .badge-outofstock {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #888;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+
         .product-card-body {
             padding: 14px 16px;
         }
@@ -231,6 +253,20 @@
                 background: #1a8cff;
             }
 
+            .btn-add-cart:disabled {
+                background: #aaa;
+                cursor: not-allowed;
+            }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            font-size: 15px;
+            grid-column: 1 / -1;
+        }
+
         /* ── Pagination ── */
         .pagination {
             display: flex;
@@ -263,89 +299,130 @@
 
 <!-- Breadcrumb -->
 <div class="breadcrumb">
-    <a href="/">Trang chủ</a> &gt; <span class="active">Tất cả sản phẩm</span>
+    <a href="/">Trang chủ</a> >
+    @if (string.IsNullOrEmpty(currentCategory))
+    {
+        <span class="active">Tất cả sản phẩm</span>
+    }
+    else
+    {
+        <text><a href="/Products">Tất cả sản phẩm</a> > <span class="active">@currentCategoryName</span></text>
+    }
 </div>
 
 <div class="shop-wrapper">
-    <!-- Sidebar -->
+    <!-- Sidebar — rendered from API data -->
     <aside class="sidebar">
         <h3>Danh mục sản phẩm</h3>
         <ul>
+            <!-- "All products" link -->
             <li>
-                <a href="?category=can-cau-tay">Cần Câu Tay</a>
+                <a href="?category=" class="@(string.IsNullOrEmpty(currentCategory) ? "active-cat" : "")">
+                    Tất cả <span class="arrow">›</span>
+                </a>
             </li>
-            <li><a href="?category=can-cau-may">Cần Câu Máy</a>
-                <li><a href="?category=can-cau-lure">Cần Câu Lure</a>
+
+            <!-- Dynamic categories from API -->
+            @foreach (var cat in Model.Categories)
+            {
+                <li>
+                    <a href="?category=@cat.Slug"
+                       class="@(currentCategory == cat.Slug ? "active-cat" : "")">
+                        @cat.Name <span class="arrow">›</span>
+                    </a>
+                </li>
+            }
         </ul>
     </aside>
 
     <!-- Products -->
     <section class="product-section">
         <div class="product-section-header">
-            <h2>Tất cả sản phẩm</h2>
+            <h2>@currentCategoryName</h2>
+
             <select class="sort-select" onchange="sortProducts(this.value)">
-                <option value="default">Mặc định</option>
-                <option value="price-asc">Giá tăng dần</option>
-                <option value="price-desc">Giá giảm dần</option>
-                <option value="newest">Mới nhất</option>
+                <option value="default" selected="@(currentSort == "" || currentSort == "default")">Mặc định</option>
+                <option value="price-asc" selected="@(currentSort == "price-asc")">Giá tăng dần</option>
+                <option value="price-desc" selected="@(currentSort == "price-desc")">Giá giảm dần</option>
+                <option value="newest" selected="@(currentSort == "newest")">Mới nhất</option>
             </select>
         </div>
 
         <div class="product-grid" id="product-grid">
-
-            @foreach (var p in Model.Products)
+            @if (!Model.Products.Any())
             {
-                <a class="product-card-link" href="/Products/@p.Id">
-                <div class="product-card">
-                    <div class="product-card-img">
-                        <img src="@p.ImageUrl" alt="@p.Name" />
-                        @if (p.DiscountPercent.HasValue)
-                        {
-                            <span class="badge">-@p.DiscountPercent%</span>
-                        }
-                    </div>
-                    <div class="product-card-body">
-                        <h4>@p.Name</h4>
-                        <div class="price-row">
-                            @if (p.IsContactPrice)
-                            {
-                                <span class="price-contact">Liên hệ</span>
-                            }
-                            else
-                            {
-                                <span class="price-new">@p.Price.ToString("N0")đ</span>
-                                @if (p.OriginalPrice.HasValue)
+                <div class="empty-state">Không tìm thấy sản phẩm nào.</div>
+            }
+            else
+            {
+                @foreach (var p in Model.Products)
+                {
+                    <a class="product-card-link" href="/Products/@p.Slug">
+                        <div class="product-card">
+                            <div class="product-card-img">
+                                <img src="@p.ImageUrl" alt="@p.Name" loading="lazy" />
+                                @if (p.DiscountPercent.HasValue && p.DiscountPercent > 0)
                                 {
-                                    <span class="price-old">@p.OriginalPrice.Value.ToString("N0")đ</span>
+                                    <span class="badge">-@p.DiscountPercent%</span>
                                 }
-                            }
+                                @if (p.IsOutOfStock)
+                                {
+                                    <span class="badge-outofstock">Hết hàng</span>
+                                }
+                            </div>
+                            <div class="product-card-body">
+                                <h4>@p.Name</h4>
+                                <div class="price-row">
+                                    @if (p.IsContactPrice)
+                                    {
+                                        <span class="price-contact">Liên hệ</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="price-new">@p.Price.ToString("N0")đ</span>
+                                        @if (p.OriginalPrice.HasValue)
+                                        {
+                                            <span class="price-old">@p.OriginalPrice.Value.ToString("N0")đ</span>
+                                        }
+                                    }
+                                </div>
+                                <button class="btn-add-cart"
+                                        disabled="@p.IsOutOfStock"
+                                        onclick='event.preventDefault(); event.stopPropagation(); addToCart(@p.Id, "@p.Name", @(p.IsContactPrice ? 0 : p.Price), "@p.ImageUrl")'>
+                                    @(p.IsOutOfStock ? "Hết hàng" : "Thêm vào giỏ")
+                                </button>
+                            </div>
                         </div>
-                        <button class="btn-add-cart"
-                                onclick='event.preventDefault(); event.stopPropagation(); addToCart(@p.Id, "@p.Name", @(p.IsContactPrice ? 0 : p.Price), "@p.ImageUrl")'>
-                            Thêm vào giỏ
-                        </button>
-                    </div>
-                </div>
-                </a>
-            }
-
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination">
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <a href="?page=@i" class="@(i == Model.CurrentPage ? "active" : "")">@i</a>
+                    </a>
+                }
             }
         </div>
+
+        <!-- Pagination — preserve all query params -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="pagination">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    var pageUrl = $"?page={i}";
+                    if (!string.IsNullOrEmpty(currentCategory)) pageUrl += $"&category={currentCategory}";
+                    if (!string.IsNullOrEmpty(currentSort)) pageUrl += $"&sort={currentSort}";
+                    if (!string.IsNullOrEmpty(currentSearch)) pageUrl += $"&search={currentSearch}";
+
+                    <a href="@pageUrl" class="@(i == Model.CurrentPage ? "active" : "")">@i</a>
+                }
+            </div>
+        }
     </section>
 </div>
 
 @section Scripts {
     <script>
         function sortProducts(value) {
-            window.location.href = '?sort=' + value;
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', value);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
         }
     </script>
 }
-

@@ -23,7 +23,5 @@ global using FlowerEcommerce.Infrastructure.Services;
 global using FlowerEcommerce.Application.Interfaces.Paginate;
 global using FlowerEcommerce.Infrastructure.Paginate;
 global using Mapster;
-global using CloudinaryDotNet;
-global using CloudinaryDotNet.Actions;
 global using FlowerEcommerce.Infrastructure.Configuration;
 global using Microsoft.Extensions.Options;

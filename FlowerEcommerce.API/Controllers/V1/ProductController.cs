@@ -23,7 +23,7 @@ public class ProductController : BaseController
 
     [HttpPut]
     public async Task<IActionResult> UpdateProduct(
-        [FromBody] UpdateProductCommand command,
+        [FromForm] UpdateProductCommand command,
         CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
@@ -49,7 +49,6 @@ public class ProductController : BaseController
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
     {
-        var test = id;
         var query = new GetProductByIdQuery { Id = id };
         var result = await Mediator.Send(query, cancellationToken);
         return result.IsSuccess
@@ -58,10 +57,9 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetProducts(
+    public async Task<IActionResult> GetProducts([FromQuery] GetProductsQuery query,
         CancellationToken cancellationToken)
     {
-        var query = new GetProductsQuery();
         var result = await Mediator.Send(query, cancellationToken);
         return result.IsSuccess
             ? Ok(ApiResponse<object>.Ok(result.Data))

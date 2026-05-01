@@ -5,13 +5,16 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateProductCommandHandler> _logger;
+    private readonly ICloudinaryService _cloudinaryService;
 
     public UpdateProductCommandHandler(
         IUnitOfWork unitOfWork,
-        ILogger<UpdateProductCommandHandler> logger)
+        ILogger<UpdateProductCommandHandler> logger,
+        ICloudinaryService cloudinaryService)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _cloudinaryService = cloudinaryService;
     }
 
     public async Task<TResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -19,25 +22,73 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         try
         {
             var existingProduct = await _unitOfWork.Repository<Product>()
-                .FirstOrDefaultAsync(predicate:x => x.Id == request.Id);
+                .FirstOrDefaultAsync(
+                predicate:x => x.Id == request.Id,
+                includes: [ nameof(Product.FileAttachments), 
+                            nameof(Product.ProductDetail),
+                            $"{nameof(Product.ProductDetail)}.{nameof(ProductDetail.SizePrices)}"],
+                cancellationToken: cancellationToken);
 
             if (existingProduct == null)
             {
                 return TResult.Failure(MessageKey.ProductNotFound, ErrorCodes.NOT_FOUND);
             }
 
-            var existingCategory = await _unitOfWork.Repository<Category>()
-                .AnyAsync(c => c.Id == request.CategoryId);
-
-            if (existingCategory)
+            if (request.CategoryId.HasValue)
             {
-                return TResult.Failure(MessageKey.CategoryNotFound, ErrorCodes.NOT_FOUND);
+                var existingCategory = await _unitOfWork.Repository<Category>()
+                    .AnyAsync(c => c.Id == request.CategoryId.Value);
+
+                if (!existingCategory)
+                    return TResult.Failure(MessageKey.CategoryNotFound, ErrorCodes.NOT_FOUND);
             }
 
-            existingProduct.Name = request.Name ?? existingProduct.Name;
-            existingProduct.Description = request.Description ?? existingProduct.Description;
-            existingProduct.Price = request.Price ?? existingProduct.Price;
-            existingProduct.CategoryId = request.CategoryId ?? existingProduct.CategoryId;
+            request.Adapt(existingProduct);
+
+            // ── Slug: re-generate nếu Name thay đổi ─────────────
+            if (request.Name is not null && existingProduct.ProductDetail is not null)
+                existingProduct.ProductDetail.Slug = StringUtils.GenerateSlug(request.Name);
+
+            // ── SizePrices: Adapt từng item ──────────────────────
+            if (request.SizePrices is { Count: > 0 } && existingProduct.ProductDetail is not null)
+            {
+                existingProduct.ProductDetail.SizePrices = request.SizePrices
+                    .Adapt<List<ProductSizePrices>>();
+            }
+
+            // ── Xử lý ảnh nếu có upload mới ─────────────────────
+            if (request.FileAttachMents is { Count: > 0 })
+            {
+                // 1. Upload ảnh mới trước
+                var uploadTasks = request.FileAttachMents
+                    .Select(f => _cloudinaryService.UploadImageAsync(f, folder: "products"));
+                var uploadResults = await Task.WhenAll(uploadTasks);
+
+                var failed = uploadResults.Where(r => !r.Success).ToList();
+                if (failed.Count > 0)
+                    return TResult.Failure(MessageKey.ImageUploadFailed, ErrorCodes.BAD_REQUEST);
+
+                // 2. Xoá ảnh cũ trên Cloudinary
+                var deleteTasks = existingProduct.FileAttachments
+                    .Select(img => _cloudinaryService.DeleteAsync(img.PublicId));
+                await Task.WhenAll(deleteTasks);
+
+                // 3. Replace danh sách ảnh trong DB
+                existingProduct.FileAttachments = uploadResults
+                    .Select((r, index) => new FileAttachment
+                    {
+                        PublicId = r.PublicId,
+                        SecureUrl = r.SecureUrl,
+                        Url = r.Url,
+                        Format = r.Format,
+                        Width = r.Width,
+                        Height = r.Height,
+                        Bytes = r.Bytes,
+                        IsMain = index == 0,
+                        SortOrder = index
+                    })
+                    .ToList();
+            }
 
             _unitOfWork.Repository<Product>().Update(existingProduct);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

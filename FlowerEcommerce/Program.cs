@@ -1,10 +1,26 @@
+using FlowerEcommerce.View.Interfaces;
+using FlowerEcommerce.View.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Services.AddRazorPages();
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AddPageRoute("/Products/Detail", "/Products/{id:int}");
+    options.Conventions.AddPageRoute("/Products/Detail", "/Products/{slug}");
+});
+
+builder.Services.AddMemoryCache();
+
+builder.Services.AddHttpClient<ICategoryApiService, CategoryApiService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+});
+
+// (Your existing product service registration stays unchanged)
+builder.Services.AddHttpClient<IProductApiService, ProductApiService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
 });
 
 var app = builder.Build();

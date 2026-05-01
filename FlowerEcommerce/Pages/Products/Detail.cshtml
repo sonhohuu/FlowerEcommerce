@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+﻿@page "{slug}"
 @model FlowerEcommerce.View.Pages.Products.DetailModel
 @{
     ViewData["Title"] = Model.Product?.Name ?? "Chi tiết sản phẩm";
@@ -412,12 +412,18 @@
 
 <!-- Breadcrumb -->
 <div class="breadcrumb">
-    <a href="/">Trang chủ</a> &gt;
-    <a href="/SanPham">Sản phẩm</a> &gt;
+    <a href="/">Trang chủ</a>
+
+    <span> &gt; </span>
+    <a href="/Products">Tất cả sản phẩm</a>
+
     @if (p?.Category != null)
     {
-        <a href="/Products?category=@p.CategorySlug">@p.Category</a><span> &gt; </span>
+        <span> &gt; </span>
+        <a href="/Products?category=@p.CategorySlug">@p.Category</a>
     }
+
+    <span> &gt; </span>
     <span class="active">@p?.Name</span>
 </div>
 

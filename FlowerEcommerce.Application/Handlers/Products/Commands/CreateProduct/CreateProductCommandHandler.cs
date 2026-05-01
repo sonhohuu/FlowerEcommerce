@@ -1,6 +1,4 @@
-﻿using FlowerEcommerce.Application.Interfaces.Services;
-
-namespace FlowerEcommerce.Application.Handlers.Products.Commands.CreateProduct;
+﻿namespace FlowerEcommerce.Application.Handlers.Products.Commands.CreateProduct;
 
 [EnableUnitOfWork]
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, TResult>
@@ -34,12 +32,12 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             var existingCategory = await _unitOfWork.Repository<Category>()
                 .AnyAsync(predicate: c => c.Id == request.CategoryId);
 
-            if (existingCategory)
+            if (!existingCategory)
             {
                 return TResult.Failure(MessageKey.CategoryNotFound, ErrorCodes.NOT_FOUND);
             }
 
-            // ── Upload ảnh nếu có ────────────────────────────
+            // ── Upload ảnh nếu có ──
             var productImages = new List<FileAttachment>();
 
             if (request.FileAttachMents is { Count: > 0 })
@@ -69,18 +67,35 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                         Bytes = r.Bytes,
                         IsMain = index == 0,   // ảnh đầu tiên là ảnh chính
                         SortOrder = index,
-                        CreatedAt = DateTime.UtcNow
                     })
                     .ToList();
             }
+
+            var sizePrices = request.SizePrices?
+                .Select(sp => new ProductSizePrices
+                {
+                    Label = sp.Label,
+                    Price = sp.Price,
+                })
+                .ToList() ?? new List<ProductSizePrices>();
+
+            var productDetail = new ProductDetail
+            {
+                Sku = request.Sku,
+                Slug = StringUtils.GenerateSlug(request.Name),
+                SizePrices = sizePrices,
+            };
 
             var product = new Product
             {
                 Name = request.Name.Trim(),
                 Description = request.Description,
                 Price = request.Price,
+                OriginalPrice = request.OriginalPrice,
+                IsContactPrice = request.IsContactPrice,
                 CategoryId = request.CategoryId,
                 FileAttachments = productImages,
+                ProductDetail = productDetail
             };
 
             _unitOfWork.Repository<Product>().Add(product);

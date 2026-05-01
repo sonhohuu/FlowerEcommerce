@@ -5,7 +5,7 @@
         public CreateProductCommandValidator() 
         {
             RuleFor(x => x.Name)
-                .MaximumLength(100).WithMessage(MessageKey.ProductNameValidLength);
+                .Length(5, 100).WithMessage(MessageKey.ProductNameValidLength);
 
             RuleFor(x => x.Description)
                 .MaximumLength(500).WithMessage(MessageKey.ProductDescriptionValidLength);

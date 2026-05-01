@@ -11,7 +11,10 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, T
     {
         var product = await _unitOfWork.Repository<Product>().FirstOrDefaultAsync(
             predicate: x => x.Id == request.Id,
-            includes: [nameof(Product.Category)],
+            includes: [ nameof(Product.ProductDetail),
+                        nameof(Product.Category),
+                        nameof(Product.FileAttachments),
+                        $"{nameof(Product.ProductDetail)}.{nameof(ProductDetail.SizePrices)}"],
             asNoTracking: true
         );
 
@@ -20,14 +23,8 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, T
             return TResult<ProductDto>.Failure("Product not found", ErrorCodes.NOT_FOUND);
         }
 
-        var productDto = new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            Price = product.Price,
-            CategoryName = product.Category?.Name
-        };
+        var productDto = product.Adapt<ProductDto>();
+
         return TResult<ProductDto>.Success(productDto);
     }
 }
