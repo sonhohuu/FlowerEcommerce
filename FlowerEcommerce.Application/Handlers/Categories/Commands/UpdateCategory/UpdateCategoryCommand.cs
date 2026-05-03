@@ -1,7 +1,10 @@
-﻿namespace FlowerEcommerce.Application.Handlers.Categories.Commands.UpdateCategory;
+﻿using Swashbuckle.AspNetCore.Annotations;
+
+namespace FlowerEcommerce.Application.Handlers.Categories.Commands.UpdateCategory;
 
 public record UpdateCategoryCommand : IRequest<TResult>
 {
-    public required ulong Id { get; init; }
+    [SwaggerIgnore]
+    public ulong Id { get; set; }
     public required string Name { get; init; }
 }

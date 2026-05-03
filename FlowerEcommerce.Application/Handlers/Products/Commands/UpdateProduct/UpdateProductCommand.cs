@@ -1,10 +1,12 @@
 ﻿using FlowerEcommerce.Application.Handlers.Products.Commands.CreateProduct;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace FlowerEcommerce.Application.Handlers.Products.Commands.UpdateProduct;
 
 public record UpdateProductCommand : IRequest<TResult>
 {
-    public required ulong Id { get; init; }
+    [SwaggerIgnore]
+    public required ulong Id { get; set; }
     public string? Name { get; init; }
     public string? Description { get; init; }
     public decimal? Price { get; init; }

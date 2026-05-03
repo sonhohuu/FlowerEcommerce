@@ -21,11 +21,13 @@ public class ProductController : BaseController
             : HandleResult(result);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(
         [FromForm] UpdateProductCommand command,
+        [FromRoute] ulong id,
         CancellationToken cancellationToken)
     {
+        command.Id = id;
         var result = await Mediator.Send(command, cancellationToken);
         return result.IsSuccess
             ? Ok(ApiResponse<object>.Ok(null))
