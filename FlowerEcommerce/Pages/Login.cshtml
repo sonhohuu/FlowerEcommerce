@@ -1,0 +1,71 @@
+﻿@page
+@model FlowerEcommerce.View.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_AuthLayout";
+}
+
+<div class="glass-card" id="auth-card">
+    <h1 class="card-title">Login</h1>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="success-banner">@Model.SuccessMessage</div>
+    }
+
+    <form method="post" novalidate>
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <input asp-for="Input.Email"
+                   class="field-input @(ViewData.ModelState["Input.Email"]?.Errors.Count > 0 ? "is-error" : "")"
+                   type="email"
+                   placeholder="Enter your email"
+                   autocomplete="email" />
+            <span class="focus-line"></span>
+            <span asp-validation-for="Input.Email" class="error-msg"></span>
+        </div>
+
+        <div class="form-group">
+            <input asp-for="Input.Password"
+                   class="field-input @(ViewData.ModelState["Input.Password"]?.Errors.Count > 0 ? "is-error" : "")"
+                   type="password"
+                   placeholder="Enter your password"
+                   autocomplete="current-password" />
+            <span class="focus-line"></span>
+            <span asp-validation-for="Input.Password" class="error-msg"></span>
+        </div>
+
+        <div class="options-row">
+            <label class="checkbox-label">
+                <input asp-for="Input.RememberMe" type="checkbox" />
+                Remember me
+            </label>
+            <a asp-page="/Account/ForgotPassword" class="link-text">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn">
+            <span class="btn-text">LOG IN</span>
+            <span class="btn-spinner" style="display:none;">SIGNING IN...</span>
+        </button>
+
+        <p class="switch-text">
+            Don't have an account?
+            <a asp-page="/Register" class="switch-link">Register</a>
+        </p>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.querySelector('form').addEventListener('submit', function () {
+            const btn = this.querySelector('.submit-btn');
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.btn-spinner').style.display = 'inline';
+            btn.disabled = true;
+        });
+    </script>
+}
