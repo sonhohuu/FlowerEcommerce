@@ -4,6 +4,8 @@ public class ApplicationUser : IdentityUser<ulong>, IDeletionAuditedEntity
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public bool IsActive { get; set; } = true;
+    public AppRoleEnum Role { get; set; } = AppRoleEnum.Customer;
+    public UserStatusEnum Status { get; set; } = UserStatusEnum.Active;
 
     public string FullName
     {

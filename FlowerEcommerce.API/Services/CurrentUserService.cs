@@ -22,7 +22,6 @@ public class CurrentUserService : ICurrentUserService
     public List<ulong> RoleIds { get; set; }
 
     public bool IsAdmin =>
-        RoleIds.Contains((int)AppRoleEnum.SuperAdministrator) ||
         RoleIds.Contains((int)AppRoleEnum.Administrator);
 
     private void FillCurrentUserInfoData(ClaimsPrincipal claimsPrincipal)

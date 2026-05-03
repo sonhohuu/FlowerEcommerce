@@ -7,6 +7,7 @@ public static class AppConstants
 
     public const int DefaultPageSize = 10;
     public const int MaxPageSize = 100;
+    public const int MaxCommonLength = 64;
 
     public const string DbCsKey = "DefaultConnection";
     public const string DateFormat = "yyyy-MM-dd";

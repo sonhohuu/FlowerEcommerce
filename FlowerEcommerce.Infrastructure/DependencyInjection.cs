@@ -1,4 +1,6 @@
-﻿namespace FlowerEcommerce.Infrastructure;
+﻿using FlowerEcommerce.Application.Interfaces;
+
+namespace FlowerEcommerce.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -22,6 +24,8 @@ public static class DependencyInjection
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddScoped<IUnitOfWork,UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IDateTimeService, DateTimeService>();
         services.AddScoped<ICloudinaryService, CloudinaryService>();
     }

@@ -1,8 +1,11 @@
-﻿namespace FlowerEcommerce.Application;
+﻿using FlowerEcommerce.Application.Common.Configs;
+using Microsoft.Extensions.Configuration;
+
+namespace FlowerEcommerce.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => 
         { 
@@ -14,6 +17,8 @@ public static class DependencyInjection
         // MediatR Behaviors
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
+
+        services.Configure<JwtBearerConfig>(configuration.GetSection(nameof(JwtBearerConfig)));
 
         return services;
     }

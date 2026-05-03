@@ -1,3 +1,4 @@
+using FlowerEcommerce.API;
 using FlowerEcommerce.API.Middlewares;
 using FlowerEcommerce.API.Services;
 
@@ -5,8 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddWebApiServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 // Add logging
 builder.Logging.AddConsole();

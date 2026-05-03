@@ -119,6 +119,7 @@ public class ApplicationDbContext : DbContext
     #region DbSet
 
     public DbSet<ApplicationUser> AppUsers { get; set; }
+    public DbSet<JwtRefreshToken> JwtRefreshTokens { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Product> Products { get; set; }

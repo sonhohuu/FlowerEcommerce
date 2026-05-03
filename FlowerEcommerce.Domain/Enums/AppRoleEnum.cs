@@ -2,7 +2,6 @@
 
 public enum AppRoleEnum
 {
-    SuperAdministrator = 1,
-    Administrator = 2,
-    Customer = 3,
+    Administrator = 1,
+    Customer = 2,
 }
