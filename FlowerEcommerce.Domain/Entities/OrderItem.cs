@@ -8,5 +8,6 @@ public class OrderItem : ModificationAuditedEntity
     public Order Order { get; set; }
 
     public int Quantity { get; set; }
+    public string? Label { get; set; }
     public decimal Price { get; set; }
 }

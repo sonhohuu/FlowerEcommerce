@@ -35,10 +35,6 @@ public class LoginModel : PageModel
         if (!ModelState.IsValid)
             return Page();
 
-        // TODO: Authenticate user via your service
-        // var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
-        // if (result.Succeeded) return RedirectToPage("/Index");
-        // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
         return Page();
     }
