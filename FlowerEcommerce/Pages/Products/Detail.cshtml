@@ -534,9 +534,9 @@ else
             <div class="action-row">
                 <span class="qty-label">Số lượng</span>
                 <div class="qty-control">
-                    <button onclick="changeQty(-1)">−</button>
+                    <button onclick="changeDetailQty(-1)">−</button>
                     <input type="number" id="qty-input" value="1" min="1" max="99" />
-                    <button onclick="changeQty(1)">+</button>
+                    <button onclick="changeDetailQty(1)">+</button>
                 </div>
                 <button class="btn-buy" onclick="buyNow()">Mua ngay</button>
                 <button class="btn-cart"
@@ -596,7 +596,7 @@ else
             setImg(next);
         }
 
-        function changeQty(dir) {
+        function changeDetailQty(dir) {
             const inp = document.getElementById('qty-input');
             let v = parseInt(inp.value) + dir;
             inp.value = Math.max(1, Math.min(99, v));

@@ -28,7 +28,7 @@ public static class MessageKey
     public const string ProductAlreadyExists = "Tên sản phẩm này đã tồn tại.";
     public const string ProductNameValidLength = "Tên sản phẩm phải từ 5 ký tự đến 100 ký tự.";
     public const string ProductDescriptionValidLength = "Mô tả sản phẩm không được vượt quá 500 ký tự";
-    public const string ProductPriceValid = "Giá sản phẩm phải lớn hơn 0";
+    public const string ProductPriceValid = "Giá sản phẩm phải lớn hơn hoặc bằng 0";
     #endregion
 
     #region Categories

@@ -15,8 +15,18 @@
     <div class="top-bar">
         <div>Hotline: <strong>1900 0000</strong> &nbsp;|&nbsp; Email: hhson@gmail.com.vn</div>
         <div>
-            <a href="/Login">Đăng nhập</a>
-            <a href="/Register">Đăng ký</a>
+            @if (!string.IsNullOrEmpty(Context.Session.GetString("username")))
+            {
+                <span style="color: #fff; font-weight: 500;">
+                    👤 @Context.Session.GetString("username")
+                </span>
+                <a href="/Logout">Đăng xuất</a>
+            }
+            else
+            {
+                <a href="/Login">Đăng nhập</a>
+                <a href="/Register">Đăng ký</a>
+            }
             <a href="/Contact">Liên hệ</a>
         </div>
     </div>

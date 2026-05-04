@@ -13,7 +13,7 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .When(x => x.Description != null);
 
         RuleFor(x => x.Price)
-            .GreaterThan(0).WithMessage(MessageKey.ProductPriceValid)
+            .GreaterThanOrEqualTo(0).WithMessage(MessageKey.ProductPriceValid)
             .When(x => x.Price != null);
     }   
 }

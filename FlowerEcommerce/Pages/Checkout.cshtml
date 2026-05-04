@@ -1,0 +1,781 @@
+﻿@page
+@model FlowerEcommerce.View.Pages.CheckoutModel
+@section Styles {
+    <style>
+        /* ── PAGE WRAPPER ── */
+        .checkout-page {
+            max-width: 1200px;
+            margin: 40px auto 64px;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* ── SECTION HEADINGS ── */
+        .section-block {
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 8px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.4s ease both;
+        }
+
+            .section-block:nth-child(2) {
+                animation-delay: 0.08s;
+            }
+
+            .section-block:nth-child(3) {
+                animation-delay: 0.16s;
+            }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #111;
+            margin: 0 0 22px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e55a00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .section-title .step-badge {
+                width: 26px;
+                height: 26px;
+                background: #e55a00;
+                color: #fff;
+                border-radius: 50%;
+                font-size: 13px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+        /* ── FORM ── */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+            .form-group.full {
+                grid-column: 1 / -1;
+            }
+
+            .form-group label {
+                font-size: 13px;
+                font-weight: 600;
+                color: #333;
+            }
+
+                .form-group label .req {
+                    color: #e55a00;
+                    margin-left: 2px;
+                }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 11px 14px;
+                border: 1.5px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+                color: #222;
+                font-family: 'Source Sans 3', sans-serif;
+                transition: border-color 0.2s, box-shadow 0.2s;
+                background: #fafafa;
+            }
+
+                .form-group input:focus,
+                .form-group textarea:focus {
+                    outline: none;
+                    border-color: #e55a00;
+                    box-shadow: 0 0 0 3px rgba(229,90,0,0.10);
+                    background: #fff;
+                }
+
+                .form-group input.error,
+                .form-group textarea.error {
+                    border-color: #e53935;
+                }
+
+            .form-group .err-msg {
+                font-size: 12px;
+                color: #e53935;
+                display: none;
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 80px;
+            }
+
+        /* ── PAYMENT METHODS ── */
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .payment-option {
+            position: relative;
+        }
+
+            .payment-option input[type="radio"] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+            }
+
+            .payment-option label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 20px 16px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: border-color 0.2s, background 0.2s, transform 0.15s;
+                background: #fafafa;
+                text-align: center;
+            }
+
+                .payment-option label:hover {
+                    border-color: #e55a00;
+                    background: #fff8f5;
+                    transform: translateY(-2px);
+                }
+
+            .payment-option input[type="radio"]:checked + label {
+                border-color: #e55a00;
+                background: #fff3ed;
+                box-shadow: 0 0 0 3px rgba(229,90,0,0.12);
+            }
+
+        .payment-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .payment-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-desc {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        .payment-option input[type="radio"]:checked + label .payment-name {
+            color: #e55a00;
+        }
+
+        /* Bank transfer detail */
+        .bank-detail {
+            display: none;
+            margin-top: 16px;
+            background: #fff8f0;
+            border: 1.5px dashed #e55a00;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #444;
+            line-height: 2;
+            animation: fadeUp 0.25s ease;
+        }
+
+            .bank-detail.show {
+                display: block;
+            }
+
+            .bank-detail b {
+                color: #111;
+            }
+
+        /* ── ORDER SUMMARY (RIGHT COLUMN) ── */
+        .order-summary {
+            position: sticky;
+            top: 20px;
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 8px;
+            overflow: hidden;
+            animation: fadeUp 0.4s ease 0.1s both;
+        }
+
+        .summary-header {
+            background: #111;
+            color: #fff;
+            padding: 16px 24px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-items {
+            padding: 0 24px;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+            .summary-items::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .summary-items::-webkit-scrollbar-track {
+                background: #f5f5f5;
+            }
+
+            .summary-items::-webkit-scrollbar-thumb {
+                background: #ddd;
+                border-radius: 2px;
+            }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .summary-item:last-child {
+                border-bottom: none;
+            }
+
+            .summary-item img {
+                width: 56px;
+                height: 56px;
+                object-fit: cover;
+                border-radius: 6px;
+                border: 1px solid #eee;
+                flex-shrink: 0;
+                background: #f5f5f5;
+            }
+
+        .summary-item-emoji {
+            width: 56px;
+            height: 56px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .summary-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .summary-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #222;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .summary-item-qty {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .summary-item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e55a00;
+            white-space: nowrap;
+        }
+
+        .empty-checkout-cart {
+            text-align: center;
+            padding: 32px 0;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Totals */
+        .summary-totals {
+            padding: 16px 24px;
+            border-top: 1px solid #ebebeb;
+            background: #fafafa;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+            .total-row.grand {
+                font-family: 'Oswald', sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                color: #111;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 2px solid #e55a00;
+            }
+
+                .total-row.grand span:last-child {
+                    color: #e55a00;
+                }
+
+        /* ── SUBMIT BUTTON ── */
+        .submit-order-btn {
+            width: 100%;
+            padding: 16px;
+            background: #e55a00;
+            color: #fff;
+            border: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .submit-order-btn:hover {
+                background: #c44e00;
+                transform: translateY(-1px);
+            }
+
+            .submit-order-btn:active {
+                transform: translateY(0);
+            }
+
+            .submit-order-btn .spinner {
+                display: none;
+                width: 18px;
+                height: 18px;
+                border: 2.5px solid rgba(255,255,255,0.4);
+                border-top-color: #fff;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+            }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── SUCCESS OVERLAY ── */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .success-overlay.show {
+                display: flex;
+            }
+
+        .success-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 48px 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            animation: popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+
+        @@keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 0.6s ease 0.3s both;
+        }
+
+        @@keyframes bounce {
+            0% {
+                transform: scale(0);
+            }
+
+            60% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success-box h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #111;
+            margin: 0 0 10px;
+        }
+
+        .success-box p {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 28px;
+            line-height: 1.6;
+        }
+
+        .success-box .back-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: #e55a00;
+            color: #fff;
+            border-radius: 6px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+            .success-box .back-btn:hover {
+                background: #c44e00;
+            }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 860px) {
+            .checkout-page {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+                order: -1;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-page {
+                padding: 0 16px;
+                margin-top: 24px;
+            }
+
+            .section-block {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb" style="padding:12px 40px;font-size:14px;color:#555;background:#f5f5f5;border-bottom:1px solid #e0e0e0;">
+    <a href="/" style="color:#555;text-decoration:none;">Trang chủ</a>
+    <span> &gt; </span>
+    <a href="/Products" style="color:#555;text-decoration:none;">Tất cả sản phẩm</a>
+    <span> &gt; </span>
+    <span style="color:#e55a00;font-weight:600;">Thanh toán</span>
+</div>
+
+<div class="checkout-page">
+
+    <!-- ══ LEFT: FORM ══ -->
+    <div class="checkout-form">
+
+        <!-- BLOCK 1: Thông tin giao hàng -->
+        <div class="section-block">
+            <h2 class="section-title">
+                <span class="step-badge">1</span>
+                Thông tin người nhận
+            </h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Họ và tên <span class="req">*</span></label>
+                    <input type="text" id="receiver-name" placeholder="Nguyễn Văn A" />
+                    <span class="err-msg" id="err-name">Vui lòng nhập họ tên</span>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại <span class="req">*</span></label>
+                    <input type="tel" id="receiver-phone" placeholder="0987 000 000" />
+                    <span class="err-msg" id="err-phone">Vui lòng nhập số điện thoại hợp lệ</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Địa chỉ giao hàng <span class="req">*</span></label>
+                <input type="text" id="receiver-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố" />
+                <span class="err-msg" id="err-address">Vui lòng nhập địa chỉ giao hàng</span>
+            </div>
+
+            <div class="form-group">
+                <label>Ghi chú thêm</label>
+                <textarea id="receiver-note" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao, chọn size M..."></textarea>
+            </div>
+        </div>
+
+        <!-- BLOCK 2: Phương thức thanh toán -->
+        <div class="section-block">
+            <h2 class="section-title">
+                <span class="step-badge">2</span>
+                Phương thức thanh toán
+            </h2>
+
+            <div class="payment-options">
+                <!-- COD -->
+                <div class="payment-option">
+                    <input type="radio" name="payment" id="pay-cod" value="cod" checked />
+                    <label for="pay-cod">
+                        <span class="payment-icon">🚚</span>
+                        <span class="payment-name">COD</span>
+                        <span class="payment-desc">Thanh toán khi nhận hàng</span>
+                    </label>
+                </div>
+
+                <!-- Chuyển khoản -->
+                <div class="payment-option">
+                    <input type="radio" name="payment" id="pay-bank" value="bank" />
+                    <label for="pay-bank">
+                        <span class="payment-icon">🏦</span>
+                        <span class="payment-name">Chuyển khoản</span>
+                        <span class="payment-desc">Chuyển khoản ngân hàng</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Bank detail (hiện khi chọn chuyển khoản) -->
+            <div class="bank-detail" id="bank-detail">
+                <b>Thông tin tài khoản:</b><br>
+                Ngân hàng: <b>Vietcombank</b><br>
+                Số tài khoản: <b>1234 5678 9012</b><br>
+                Chủ tài khoản: <b>NGUYEN VAN A</b><br>
+                Nội dung CK: <b>[Họ tên] + [SĐT]</b><br>
+                <span style="color:#e55a00;font-size:13px;">⚠ Đơn hàng sẽ được xử lý sau khi xác nhận thanh toán.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ RIGHT: ORDER SUMMARY ══ -->
+    <div>
+        <div class="order-summary">
+            <div class="summary-header">🛒 Đơn hàng của bạn</div>
+
+            <div class="summary-items" id="checkout-items">
+                <div class="empty-checkout-cart">Giỏ hàng đang trống</div>
+            </div>
+
+            <div class="summary-totals">
+                <div class="total-row">
+                    <span>Tạm tính</span>
+                    <span id="subtotal-price">0đ</span>
+                </div>
+                <div class="total-row">
+                    <span>Phí vận chuyển</span>
+                    <span style="color:#28a745;font-weight:600;">Miễn phí</span>
+                </div>
+                <div class="total-row grand">
+                    <span>Tổng cộng</span>
+                    <span id="grand-total-price">0đ</span>
+                </div>
+            </div>
+
+            <button class="submit-order-btn" id="place-order-btn" onclick="placeOrder()">
+                <span id="btn-text">Đặt hàng ngay →</span>
+                <span class="spinner" id="btn-spinner"></span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+    <div class="success-box">
+        <div class="success-icon">🎉</div>
+        <h2>Đặt hàng thành công!</h2>
+        <p id="success-msg">Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.</p>
+        <a href="/Products" class="back-btn" onclick="clearCartAfterOrder()">Tiếp tục mua sắm</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ── Load cart from localStorage ──
+        function loadCheckoutCart() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+            const items = Object.values(cart);
+            const container = document.getElementById('checkout-items');
+
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-checkout-cart">🛒<br><br>Giỏ hàng đang trống</div>';
+                document.getElementById('subtotal-price').textContent = '0đ';
+                document.getElementById('grand-total-price').textContent = '0đ';
+                return;
+            }
+
+            const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+            container.innerHTML = items.map(i => `
+                <div class="summary-item">
+                    ${i.image
+                        ? `<img src="${i.image}" alt="${i.name}" />`
+                        : `<div class="summary-item-emoji">🛍️</div>`
+                    }
+                    <div class="summary-item-info">
+                        <div class="summary-item-name">${i.name}</div>
+                        <div class="summary-item-qty">x${i.qty}</div>
+                    </div>
+                    <div class="summary-item-price">${fmt(i.price * i.qty)}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('subtotal-price').textContent = fmt(total);
+            document.getElementById('grand-total-price').textContent = fmt(total);
+        }
+
+        // ── Payment method toggle ──
+        document.querySelectorAll('input[name="payment"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const bankDetail = document.getElementById('bank-detail');
+                bankDetail.classList.toggle('show', this.value === 'bank');
+            });
+        });
+
+        // ── Validation ──
+        function validateField(id, errId, checkFn) {
+            const el = document.getElementById(id);
+            const err = document.getElementById(errId);
+            const ok = checkFn(el.value.trim());
+            el.classList.toggle('error', !ok);
+            err.style.display = ok ? 'none' : 'block';
+            return ok;
+        }
+
+        function validate() {
+            const nameOk = validateField('receiver-name', 'err-name', v => v.length >= 2);
+            const phoneOk = validateField('receiver-phone', 'err-phone', v => /^[0-9]{9,11}$/.test(v.replace(/\s/g, '')));
+            const addrOk = validateField('receiver-address', 'err-address', v => v.length >= 5);
+            return nameOk && phoneOk && addrOk;
+        }
+
+        // ── Place order ──
+        function placeOrder() {
+            if (!validate()) return;
+
+            const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+            if (Object.keys(cart).length === 0) {
+                alert('Giỏ hàng đang trống!');
+                return;
+            }
+
+            // Loading state
+            const btn = document.getElementById('place-order-btn');
+            document.getElementById('btn-text').style.display = 'none';
+            document.getElementById('btn-spinner').style.display = 'inline-block';
+            btn.disabled = true;
+
+            // Simulate API call — replace with real fetch to your order API
+            setTimeout(() => {
+                const payMethod = document.querySelector('input[name="payment"]:checked').value;
+                const msg = payMethod === 'bank'
+                    ? 'Vui lòng chuyển khoản theo thông tin đã cung cấp.<br>Đơn hàng sẽ được xử lý sau khi xác nhận.'
+                    : 'Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.';
+
+                document.getElementById('success-msg').innerHTML = msg;
+                document.getElementById('success-overlay').classList.add('show');
+
+                // Reset button
+                document.getElementById('btn-text').style.display = 'inline';
+                document.getElementById('btn-spinner').style.display = 'none';
+                btn.disabled = false;
+            }, 1200);
+        }
+
+        function clearCartAfterOrder() {
+            localStorage.removeItem('cart');
+            // Refresh cart badge if site.js is loaded
+            if (typeof refreshCart === 'function') refreshCart();
+        }
+
+        // ── Real-time validation on blur ──
+        document.getElementById('receiver-name').addEventListener('blur', () =>
+            validateField('receiver-name', 'err-name', v => v.length >= 2));
+        document.getElementById('receiver-phone').addEventListener('blur', () =>
+            validateField('receiver-phone', 'err-phone', v => /^[0-9]{9,11}$/.test(v.replace(/\s/g, ''))));
+        document.getElementById('receiver-address').addEventListener('blur', () =>
+            validateField('receiver-address', 'err-address', v => v.length >= 5));
+
+        // ── Init ──
+        document.addEventListener('DOMContentLoaded', function () {
+            loadCheckoutCart();
+        });
+    </script>
+}
