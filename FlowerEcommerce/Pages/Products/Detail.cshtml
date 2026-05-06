@@ -1,4 +1,5 @@
 ﻿@page "{slug}"
+@using FlowerEcommerce.View.Helpers
 @model FlowerEcommerce.View.Pages.Products.DetailModel
 @{
     ViewData["Title"] = Model.Product?.Name ?? "Chi tiết sản phẩm";
@@ -501,7 +502,7 @@ else
             @if (!string.IsNullOrWhiteSpace(p.Description))
             {
                 <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:10px;">Mô tả:</div>
-                <div class="specs-block">@Html.Raw(p.Description)</div>
+                <div class="specs-block">@Html.SafeHtml(p.Description)</div>
             }
 
             <!-- Size price table -->
@@ -513,10 +514,6 @@ else
                     {
                         <div>@sp.Label - giá @sp.Price.ToString("N0")đ</div>
                     }
-                    <div class="note">
-                        - Hiện tại website chưa chọn được size khi đặt hàng, quý khách hàng đặt hàng có thể ghi chú chọn size,
-                        hoặc quyas khách hàng cứ đặt hàng một size nào nó, chúng tôi sẽ liên hệ lại tư vấn và chọn size cho quý khách.
-                    </div>
                 </div>
             }
 
