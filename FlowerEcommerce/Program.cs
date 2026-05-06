@@ -1,3 +1,4 @@
+using FlowerEcommerce.View.Http;
 using FlowerEcommerce.View.Interfaces;
 using FlowerEcommerce.View.Services;
 
@@ -11,6 +12,9 @@ builder.Services.AddRazorPages(options =>
 });
 
 builder.Services.AddMemoryCache();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<AuthTokenHandler>();
 
 builder.Services.AddHttpClient<ICategoryApiService, CategoryApiService>(client =>
 {
@@ -28,7 +32,7 @@ builder.Services.AddHttpClient("Api", client =>
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
-});
+}).AddHttpMessageHandler<AuthTokenHandler>(); ;
 
 // Session để lưu thông tin user (username, role, userId)
 builder.Services.AddDistributedMemoryCache();

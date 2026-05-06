@@ -1,5 +1,4 @@
 ﻿using FlowerEcommerce.Application.Handlers.Products.Commands.CreateProduct;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace FlowerEcommerce.Application.Handlers.Products.Commands.UpdateProduct;
 

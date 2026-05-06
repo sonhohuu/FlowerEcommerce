@@ -73,6 +73,10 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
                     .Select(img => _cloudinaryService.DeleteAsync(img.PublicId));
                 await Task.WhenAll(deleteTasks);
 
+                // 2.1 Xóa file cũ dưới DB
+                _unitOfWork.Repository<FileAttachment>().RemoveRange(existingProduct.FileAttachments);
+                existingProduct.FileAttachments.Clear();
+
                 // 3. Replace danh sách ảnh trong DB
                 existingProduct.FileAttachments = uploadResults
                     .Select((r, index) => new FileAttachment

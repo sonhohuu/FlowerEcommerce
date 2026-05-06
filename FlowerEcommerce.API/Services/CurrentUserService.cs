@@ -12,17 +12,17 @@ public class CurrentUserService : ICurrentUserService
             httpContext.User.Identity!.IsAuthenticated)
             FillCurrentUserInfoData(httpContext.User);
 
-        RoleIds ??= [];
+        Role ??= string.Empty;
     }
 
     public ulong? UserId { get; set; }
     public string UserName { get; set; }
     public string Email { get; set; }
     public bool IsAuthenticated { get; set; }
-    public List<ulong> RoleIds { get; set; }
+    public string Role { get; set; }
 
     public bool IsAdmin =>
-        RoleIds.Contains((int)AppRoleEnum.Administrator);
+        Role == ((int)AppRoleEnum.Administrator).ToString();
 
     private void FillCurrentUserInfoData(ClaimsPrincipal claimsPrincipal)
     {
@@ -31,10 +31,7 @@ public class CurrentUserService : ICurrentUserService
         UserName = claimsPrincipal.FindFirstValue(AppClaimTypes.UserName)!;
         Email = claimsPrincipal.FindFirstValue(AppClaimTypes.Email)!;
 
-        RoleIds = JsonSerializer.Deserialize<List<ulong>>(
-            claimsPrincipal.FindFirstValue(AppClaimTypes.RoleIds)!,
-            AppConstants.JsonSerializerOptions
-        )!.ToList();
+        Role = claimsPrincipal.FindFirstValue(AppClaimTypes.RoleIds)!;
 
         IsAuthenticated = true;
     }

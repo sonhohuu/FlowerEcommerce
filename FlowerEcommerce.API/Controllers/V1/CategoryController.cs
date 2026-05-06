@@ -2,6 +2,7 @@
 using FlowerEcommerce.Application.Handlers.Categories.Commands.DeleteCategory;
 using FlowerEcommerce.Application.Handlers.Categories.Commands.UpdateCategory;
 using FlowerEcommerce.Application.Handlers.Categories.Queries.GetCategories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlowerEcommerce.API.Controllers.V1;
 
@@ -9,6 +10,7 @@ namespace FlowerEcommerce.API.Controllers.V1;
 [Route("api/[controller]")]
 public class CategoryController : BaseController
 {
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPost]
     public async Task<IActionResult> CreateCategory(
     [FromBody] CreateCategoryCommand command,
@@ -20,6 +22,7 @@ public class CategoryController : BaseController
             : HandleResult(result);
     }
 
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(
         [FromBody] UpdateCategoryCommand command,
@@ -33,6 +36,7 @@ public class CategoryController : BaseController
             : HandleResult(result);
     }
 
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(
         [FromRoute] ulong id,

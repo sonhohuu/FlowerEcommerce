@@ -87,7 +87,6 @@ public class ApplicationDbContext : DbContext
     public void ConfigureSoftDeleteFilter<TEntity>(ModelBuilder builder)
     where TEntity : class, IDeletionAuditedEntity
     {
-        // Ở đây, "this" được compiler hiểu là Context instance runtime
         builder.Entity<TEntity>().HasQueryFilter(e =>
             e.DeletedAt == null || _ignoreSoftDeleteFilter);
     }

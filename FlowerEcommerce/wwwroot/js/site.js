@@ -95,6 +95,18 @@ function checkout() {
 }
 
 /* ── SEARCH BAR ─────────────────────────────────────────── */
+//function toggleSearch() {
+//    const sb = document.getElementById('search-bar');
+//    if (!sb) return;
+//    sb.classList.toggle('open');
+//    if (sb.classList.contains('open')) {
+//        setTimeout(() => {
+//            const input = document.getElementById('search-input');
+//            if (input) input.focus();
+//        }, 200);
+//    }
+//}
+
 function toggleSearch() {
     const sb = document.getElementById('search-bar');
     if (!sb) return;
@@ -106,6 +118,34 @@ function toggleSearch() {
         }, 200);
     }
 }
+
+function doSearch() {
+    const input = document.getElementById('search-input');
+    const keyword = input?.value?.trim();
+    if (!keyword) return;
+    window.location.href = `/Products?search=${encodeURIComponent(keyword)}`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    refreshCart();
+
+    // Search: nhấn Enter để tìm
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') doSearch();
+        });
+    }
+
+    // Active nav link
+    const currentPath = window.location.pathname.toLowerCase();
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        const href = link.getAttribute('href')?.toLowerCase();
+        if (href && (currentPath === href || currentPath.startsWith(href + '/'))) {
+            link.classList.add('active');
+        }
+    });
+});
 
 /* ── TOAST ──────────────────────────────────────────────── */
 let toastTimer;

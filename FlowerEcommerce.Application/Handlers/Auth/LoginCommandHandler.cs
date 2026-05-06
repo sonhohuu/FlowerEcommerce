@@ -1,6 +1,4 @@
-﻿using FlowerEcommerce.Application.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace FlowerEcommerce.Application.Handlers.Auth;

@@ -37,6 +37,18 @@ public static class MessageKey
     public const string CategoryNameValidLength = "Tên danh mục phải từ 3 ký tự đến 50 ký tự.";
     #endregion
 
+    #region Orders
+    public const string OrderNotFound = "Đơn hàng không tồn tại.";
+    public const string CustomerNameValidLength = "Tên khách hàng phải từ 5 ký tự đến 100 ký tự.";
+    public const string PhoneNumberValid = "Số điện thoại không hợp lệ.";
+    public const string AddressValidLength = "Địa chỉ phải từ 10 ký tự đến 200 ký tự.";
+    public const string OrderItemQuantity = "Số lượng phải lớn hơn 0.";
+    public const string OrderItemsRequired = "Danh sách sản phẩm trong đơn hàng không được để trống .";
+    public const string OrderItemNotFound = "Một hoặc nhiều sản phẩm trong đơn hàng không tồn tại.";
+    public const string OrderCannotBeUpdated = "Không thể cập nhật đơn hàng đã hoàn thành hoặc thất bại.";
+    public const string InvalidStatusTransition = "Chuyển đổi trạng thái không hợp lệ.";
+    #endregion
+
     #region Files
     public const string ImageUploadFailed = "Tải lên hình ảnh thất bại.";
     #endregion

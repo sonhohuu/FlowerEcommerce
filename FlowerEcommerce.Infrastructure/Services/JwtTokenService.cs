@@ -55,6 +55,8 @@ public class JwtTokenService : IJwtTokenService
             )
         );
 
+        await SaveAndCacheToken(user.Id, refreshToken, refreshTokenExpires, cancellationToken);
+
         return TResult<JwtResponse>.Success(new JwtResponse
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
@@ -96,5 +98,22 @@ public class JwtTokenService : IJwtTokenService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return jwtRevokeToken;
+    }
+
+    private async Task SaveAndCacheToken(
+        ulong userId, Guid refreshToken, DateTime refreshTokenExpires,
+        CancellationToken cancellationToken = default
+    )
+    {
+        //refreshTokenCachingService.AddRefreshTokenToCache(refreshToken, JwtRefreshTokenStatusEnum.Active,
+        //    refreshTokenExpires);
+        _unitOfWork.Repository<JwtRefreshToken>().Add(new JwtRefreshToken
+        {
+            RefreshToken = refreshToken,
+            Status = JwtRefreshTokenStatusEnum.Active,
+            Expires = refreshTokenExpires,
+            UserId = userId
+        });
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

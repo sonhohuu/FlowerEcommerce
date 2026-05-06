@@ -17,6 +17,18 @@ public class AuthController : BaseController
             : HandleResult(result);
     }
 
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(TResult<JwtResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> RefreshToken(RefreshTokenCommand command, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var result = await Mediator.Send(command, cancellationToken);
+        return result.IsSuccess
+            ? Ok(ApiResponse<object>.Ok(result.Data))
+            : HandleResult(result);
+    }
+
     [HttpPost("register")]
     [ProducesResponseType(typeof(TResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)

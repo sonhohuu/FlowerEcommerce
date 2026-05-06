@@ -3,6 +3,7 @@ using FlowerEcommerce.Application.Handlers.Products.Commands.DeleteProduct;
 using FlowerEcommerce.Application.Handlers.Products.Commands.UpdateProduct;
 using FlowerEcommerce.Application.Handlers.Products.Queries.GetProductById;
 using FlowerEcommerce.Application.Handlers.Products.Queries.GetProducts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlowerEcommerce.API.Controllers;
 
@@ -10,6 +11,7 @@ namespace FlowerEcommerce.API.Controllers;
 [Route("api/[controller]")]
 public class ProductController : BaseController
 {
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPost]
     public async Task<IActionResult> CreateProduct(
         [FromForm] CreateProductCommand command,
@@ -21,6 +23,7 @@ public class ProductController : BaseController
             : HandleResult(result);
     }
 
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(
         [FromForm] UpdateProductCommand command,
@@ -34,6 +37,7 @@ public class ProductController : BaseController
             : HandleResult(result);
     }
 
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(
         [FromRoute] ulong id,

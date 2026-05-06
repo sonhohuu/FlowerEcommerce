@@ -25,3 +25,4 @@ global using System.Text.RegularExpressions;
 global using FlowerEcommerce.Application.Common.Utils;
 global using FlowerEcommerce.Application.Interfaces.Services;
 global using FlowerEcommerce.Application.Interfaces;
+global using Swashbuckle.AspNetCore.Annotations;
