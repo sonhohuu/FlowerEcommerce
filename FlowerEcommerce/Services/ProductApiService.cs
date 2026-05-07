@@ -45,7 +45,7 @@ public class ProductApiService : IProductApiService
 
         var response = await _httpClient
             .GetFromJsonAsync<ApiResponse<PaginatedData<ProductListApiDto>>>(
-                $"/api/product?{queryString}");
+                $"api/product?{queryString}");
 
         if (response?.Success != true || response.Data is null)
             return (new List<ProductViewModel>(), 0, page);
@@ -87,7 +87,7 @@ public class ProductApiService : IProductApiService
         {
             var response = await _httpClient
                 .GetFromJsonAsync<ApiResponse<PaginatedData<ProductListApiDto>>>(
-                    $"/api/product?page=1&pageSize=50&searchKeyword={Uri.EscapeDataString(slug)}");
+                    $"api/product?page=1&pageSize=50&searchKeyword={Uri.EscapeDataString(slug)}");
 
             if (response?.Success == true && response.Data?.Items is not null)
             {
@@ -110,7 +110,7 @@ public class ProductApiService : IProductApiService
         {
             var response = await _httpClient
                 .GetFromJsonAsync<ApiResponse<ProductDetailApiDto>>(
-                    $"/api/product/{id}");
+                    $"api/product/{id}");
 
             if (response?.Success != true || response.Data is null)
                 return null;

@@ -387,8 +387,12 @@
                                     }
                                 </div>
                                 <button class="btn-add-cart"
-                                        disabled="@p.IsOutOfStock"
-                                        onclick='event.preventDefault(); event.stopPropagation(); addToCart(@p.Id, "@p.Name", @(p.IsContactPrice ? 0 : p.Price), "@p.ImageUrl")'>
+                                    @(p.IsOutOfStock ? "disabled" : "")
+                                        data-id="@p.Id"
+                                        data-name="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(p.Name))"
+                                        data-price="@(p.IsContactPrice ? 0 : p.Price)"
+                                        data-image="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(p.ImageUrl ?? ""))"
+                                        onclick="event.preventDefault(); event.stopPropagation();">
                                     @(p.IsOutOfStock ? "Hết hàng" : "Thêm vào giỏ")
                                 </button>
                             </div>
@@ -424,5 +428,17 @@
             url.searchParams.set('page', '1');
             window.location.href = url.toString();
         }
+
+        document.getElementById('product-grid').addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-add-cart');
+            if (!btn || btn.disabled) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const id    = parseInt(btn.dataset.id);
+            const name  = JSON.parse(btn.dataset.name);
+            const price = parseFloat(btn.dataset.price);
+            const image = JSON.parse(btn.dataset.image);
+            addToCart(id, name, price, image);
+        });
     </script>
 }

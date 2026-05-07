@@ -8,11 +8,19 @@ public class AuthTokenHandler : DelegatingHandler
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _config;
+    private readonly ILogger<AuthTokenHandler> _logger;
+    private readonly IHostEnvironment _env;
 
-    public AuthTokenHandler(IHttpContextAccessor httpContextAccessor, IConfiguration config)
+    public AuthTokenHandler(
+        IHttpContextAccessor httpContextAccessor,
+        IConfiguration config,
+        ILogger<AuthTokenHandler> logger,
+        IHostEnvironment env)
     {
         _httpContextAccessor = httpContextAccessor;
         _config = config;
+        _logger = logger;
+        _env = env;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -26,16 +34,20 @@ public class AuthTokenHandler : DelegatingHandler
 
         var response = await base.SendAsync(request, cancellationToken);
 
-        // Access token hết hạn → thử refresh
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
+            _logger.LogInformation("401 received, attempting token refresh...");
             var newToken = await TryRefreshTokenAsync(httpContext, cancellationToken);
+
             if (newToken is not null)
             {
-                // Clone request vì HttpRequestMessage không thể gửi lại
                 var retryRequest = await CloneRequestAsync(request);
                 retryRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
                 response = await base.SendAsync(retryRequest, cancellationToken);
+            }
+            else
+            {
+                _logger.LogWarning("Token refresh failed.");
             }
         }
 
@@ -48,58 +60,79 @@ public class AuthTokenHandler : DelegatingHandler
         if (httpContext is null) return null;
 
         var refreshToken = httpContext.Request.Cookies["refresh_token"];
-        if (string.IsNullOrEmpty(refreshToken)) return null;
-
-        // Gọi thẳng không qua handler (tránh vòng lặp vô tận)
-        using var client = new HttpClient();
-        client.BaseAddress = new Uri(_config["ApiBaseUrl"]!);
-
-        using var refreshResponse = await client.PostAsJsonAsync(
-            "/api/auth/refresh-token",
-            new { RefreshToken = refreshToken },
-            cancellationToken);
-
-        if (!refreshResponse.IsSuccessStatusCode)
+        if (string.IsNullOrEmpty(refreshToken))
         {
-            // Refresh token cũng hết hạn → xóa cookie, bắt login lại
-            httpContext.Response.Cookies.Delete("access_token");
-            httpContext.Response.Cookies.Delete("refresh_token");
+            _logger.LogWarning("No refresh_token cookie found.");
             return null;
         }
 
-        var result = await refreshResponse.Content
-            .ReadFromJsonAsync<ApiResponse<LoginData>>(cancellationToken: cancellationToken);
-
-        if (result?.Data?.TokenModel is null) return null;
-
-        var token = result.Data.TokenModel;
-
-        // Cập nhật cookie mới
-        var cookieOptions = new CookieOptions
+        try
         {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = token.AccessTokenExpires
-        };
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri(_config["ApiBaseUrl"]!);
 
-        httpContext.Response.Cookies.Append("access_token", token.AccessToken ?? "", cookieOptions);
+            using var refreshResponse = await client.PostAsJsonAsync(
+                "api/auth/refresh-token",
+                new { RefreshToken = refreshToken },
+                cancellationToken);
 
-        if (!string.IsNullOrEmpty(token.RefreshToken))
-        {
-            httpContext.Response.Cookies.Append("refresh_token", token.RefreshToken, new CookieOptions
+            _logger.LogInformation("Refresh API response: {Status}", refreshResponse.StatusCode);
+
+            if (!refreshResponse.IsSuccessStatusCode)
+            {
+                DeleteAuthCookies(httpContext);
+                return null;
+            }
+
+            var result = await refreshResponse.Content
+                .ReadFromJsonAsync<ApiResponse<LoginData>>(cancellationToken: cancellationToken);
+
+            if (result?.Data?.TokenModel is null) return null;
+
+            var token = result.Data.TokenModel;
+
+            // Dev  → Secure=false  → cookie hoạt động trên http://localhost
+            // Prod → Secure=true   → bắt buộc https
+            var secure = !_env.IsDevelopment();
+
+            var accessCookieOpts = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = token.RefreshTokenExpires
-            });
-        }
+                Secure = secure,
+                SameSite = SameSiteMode.Lax,
+                Expires = token.AccessTokenExpires
+            };
 
-        return token.AccessToken;
+            var refreshCookieOpts = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = secure,
+                SameSite = SameSiteMode.Lax,
+                Expires = token.RefreshTokenExpires
+            };
+
+            httpContext.Response.Cookies.Append("access_token", token.AccessToken ?? "", accessCookieOpts);
+
+            if (!string.IsNullOrEmpty(token.RefreshToken))
+                httpContext.Response.Cookies.Append("refresh_token", token.RefreshToken, refreshCookieOpts);
+
+            _logger.LogInformation("Tokens refreshed and saved to cookies.");
+            return token.AccessToken;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception during token refresh");
+            return null;
+        }
     }
 
-    // HttpRequestMessage không reusable → phải clone trước khi retry
+    private static void DeleteAuthCookies(HttpContext httpContext)
+    {
+        httpContext.Response.Cookies.Delete("access_token");
+        httpContext.Response.Cookies.Delete("refresh_token");
+        httpContext.Session.Remove("username");
+    }
+
     private static async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage original)
     {
         var clone = new HttpRequestMessage(original.Method, original.RequestUri);

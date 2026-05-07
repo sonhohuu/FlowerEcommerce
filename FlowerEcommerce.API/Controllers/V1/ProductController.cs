@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FlowerEcommerce.API.Controllers;
 
+[AllowAnonymous]
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 public class ProductController : BaseController
 {
-    [Authorize(Policy = AppPolicy.AdminOnly)]
+    //[Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPost]
     public async Task<IActionResult> CreateProduct(
         [FromForm] CreateProductCommand command,
@@ -23,7 +24,7 @@ public class ProductController : BaseController
             : HandleResult(result);
     }
 
-    [Authorize(Policy = AppPolicy.AdminOnly)]
+    //[Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(
         [FromForm] UpdateProductCommand command,

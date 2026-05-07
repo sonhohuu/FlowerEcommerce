@@ -61,7 +61,7 @@ public class RegisterModel : PageModel
                 LastName = Input.LastName,
             };
 
-            using var response = await client.PostAsJsonAsync("/api/auth/register", payload);
+            using var response = await client.PostAsJsonAsync("api/auth/register", payload);
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
 
             if (response.IsSuccessStatusCode && result?.Success == true)

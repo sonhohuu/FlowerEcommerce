@@ -219,6 +219,56 @@
                 font-style: italic;
             }
 
+        /* ── Size Options ── */
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .size-option-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: #fafafa;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, transform 0.15s;
+            min-width: 90px;
+            text-align: center;
+        }
+
+            .size-option-btn:hover {
+                border-color: #e55a00;
+                background: #fff8f5;
+                transform: translateY(-2px);
+            }
+
+            .size-option-btn.selected {
+                border-color: #e55a00;
+                background: #fff3ed;
+                box-shadow: 0 0 0 3px rgba(229,90,0,0.12);
+            }
+
+        .size-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .size-option-btn.selected .size-label {
+            color: #e55a00;
+        }
+
+        .size-price {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e55a00;
+        }
+
         /* Address */
         .contact-row {
             display: flex;
@@ -508,12 +558,25 @@ else
             <!-- Size price table -->
             @if (p.SizePrices.Any())
             {
-                <div class="size-table">
-                    <div class="title">Bảng giá các size cần: (Thông số cần xem phía dưới nhé)</div>
-                    @foreach (var sp in p.SizePrices)
-                    {
-                        <div>@sp.Label - giá @sp.Price.ToString("N0")đ</div>
-                    }
+                <div style="margin: 16px 0;">
+                    <div style="font-size:13px;font-weight:700;color:#222;margin-bottom:10px;">
+                        Chọn size / loại:
+                    </div>
+                    <div class="size-options" id="size-options">
+                        @foreach (var sp in p.SizePrices)
+                        {
+                            <button class="size-option-btn"
+                                    data-label="@sp.Label"
+                                    data-price="@sp.Price"
+                                    onclick="selectSize(this)">
+                                <span class="size-label">@sp.Label</span>
+                                <span class="size-price">@sp.Price.ToString("N0")đ</span>
+                            </button>
+                        }
+                    </div>
+                    <div class="size-error" id="size-error" style="display:none;color:#e55a00;font-size:13px;margin-top:6px;">
+                        ⚠ Vui lòng chọn size trước khi thêm vào giỏ
+                    </div>
                 </div>
             }
 
@@ -536,8 +599,7 @@ else
                     <button onclick="changeDetailQty(1)">+</button>
                 </div>
                 <button class="btn-buy" onclick="buyNow()">Mua ngay</button>
-                <button class="btn-cart"
-                        onclick='addToCart(@p.Id, "@p.Name", @(p.IsContactPrice || p.IsOutOfStock ? 0 : p.Price), "@p.Images[0]")'>
+                <button class="btn-cart" onclick="addToCartDetail()">
                     Thêm vào giỏ hàng
                 </button>
             </div>
@@ -578,8 +640,18 @@ else
 @section Scripts {
     <script>
         const images = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Images ?? new List<string>()));
-        let currentIdx = 0;
+        const productId   = @p.Id;
+        const productName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Name ?? ""));
+        const productImg  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Images?.FirstOrDefault() ?? ""));
+        const hasSizes    = @Html.Raw(p.SizePrices.Any() ? "true" : "false");
+                // ✅ MỚI — InvariantCulture render "1850000" → JS đọc đúng
+        const basePrice = @(p.IsContactPrice || p.IsOutOfStock ? "0" : p.Price.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
+        let currentIdx    = 0;
+        let selectedLabel = null;
+        let selectedPrice = null;
+
+        // ── Gallery ──
         function setImg(idx) {
             currentIdx = idx;
             document.getElementById('main-img').src = images[idx];
@@ -589,21 +661,79 @@ else
         }
 
         function changeImg(dir) {
-            let next = (currentIdx + dir + images.length) % images.length;
-            setImg(next);
+            setImg((currentIdx + dir + images.length) % images.length);
         }
 
         function changeDetailQty(dir) {
             const inp = document.getElementById('qty-input');
-            let v = parseInt(inp.value) + dir;
-            inp.value = Math.max(1, Math.min(99, v));
+            inp.value = Math.max(1, Math.min(99, parseInt(inp.value) + dir));
         }
 
-        function buyNow() {
-            const qty = parseInt(document.getElementById('qty-input').value);
-            // TODO: redirect to checkout with product + qty
-            showToast('Đang chuyển đến thanh toán...');
-            setTimeout(() => window.location.href = '/Checkout', 800);
+        // ── Size selector ──
+        function selectSize(btn) {
+            document.querySelectorAll('.size-option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedLabel = btn.dataset.label;
+            selectedPrice = parseFloat(btn.dataset.price);
+            document.getElementById('size-error').style.display = 'none';
         }
+
+        // ── Add to cart ──
+        function addToCartDetail() {
+            const qty = parseInt(document.getElementById('qty-input').value) || 1;
+
+            if (hasSizes) {
+                if (!selectedLabel) {
+                    document.getElementById('size-error').style.display = 'block';
+                    showToast('warning', 'Chưa chọn size', 'Vui lòng chọn size trước khi thêm vào giỏ.');
+                    return;
+                }
+                // ID duy nhất cho mỗi size = productId_label
+                const cartKey  = `${productId}_${selectedLabel}`;
+                const itemName = `${productName} (${selectedLabel})`;
+
+                if (!cart[cartKey]) {
+                    cart[cartKey] = {
+                        id:    cartKey,
+                        name:  itemName,
+                        price: selectedPrice,
+                        image: productImg,
+                        label: selectedLabel,
+                        qty:   0
+                    };
+                }
+                cart[cartKey].qty += qty;
+            } else {
+                // Sản phẩm không có size
+                if (!cart[productId]) {
+                    cart[productId] = {
+                        id:    productId,
+                        name:  productName,
+                        price: basePrice,
+                        image: productImg,
+                        label: null,
+                        qty:   0
+                    };
+                }
+                cart[productId].qty += qty;
+            }
+
+            saveCart();
+            refreshCart();
+            showToast('success', 'Thêm vào giỏ hàng',
+                `Đã thêm <b>${hasSizes ? productName + ' (' + selectedLabel + ')' : productName}</b> vào giỏ!`);
+        }
+
+        // ── Buy now ──
+        function buyNow() {
+            if (hasSizes && !selectedLabel) {
+                document.getElementById('size-error').style.display = 'block';
+                showToast('warning', 'Chưa chọn size', 'Vui lòng chọn size trước khi mua.');
+                return;
+            }
+            addToCartDetail();
+            setTimeout(() => window.location.href = '/Checkout', 500);
+        }
+    
     </script>
 }

@@ -1,0 +1,1318 @@
+﻿@page
+@model FlowerEcommerce.View.Pages.OrderHistoryModel
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --accent: #e55a00;
+            --accent-lt: #fff3ed;
+            --accent-dk: #c44e00;
+            --txt: #111;
+            --txt-2: #555;
+            --txt-3: #999;
+            --border: #e8e8e8;
+            --bg: #f7f6f4;
+            --card: #fff;
+            --r: 14px;
+            --sh: 0 2px 14px rgba(0,0,0,.07);
+            --sh-h: 0 10px 32px rgba(0,0,0,.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+        }
+
+        .oh-wrap {
+            font-family: 'DM Sans', sans-serif;
+            max-width: 1060px;
+            margin: 36px auto 80px;
+            padding: 0 20px;
+        }
+
+        /* ── HEADER ── */
+        .oh-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .oh-header-left h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--txt);
+            margin: 0 0 4px;
+            letter-spacing: -.4px;
+        }
+
+        .oh-header-left p {
+            font-size: 14px;
+            color: var(--txt-3);
+            margin: 0;
+        }
+
+        .oh-count-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: none;
+        }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-search {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+            .filter-search input {
+                width: 100%;
+                padding: 10px 16px 10px 40px;
+                border: 1.5px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: 'DM Sans', sans-serif;
+                background: var(--card);
+                color: var(--txt);
+                transition: border-color .2s, box-shadow .2s;
+            }
+
+                .filter-search input:focus {
+                    outline: none;
+                    border-color: var(--accent);
+                    box-shadow: 0 0 0 3px rgba(229,90,0,.1);
+                }
+
+                .filter-search input::placeholder {
+                    color: var(--txt-3);
+                }
+
+        .search-ico {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--txt-3);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .status-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .status-tab {
+            padding: 7px 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--txt-2);
+            cursor: pointer;
+            background: var(--card);
+            transition: all .15s;
+            white-space: nowrap;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+            .status-tab:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+            .status-tab.active {
+                border-color: var(--accent);
+                background: var(--accent);
+                color: #fff;
+            }
+
+        /* ── ORDER LIST ── */
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* ── ORDER CARD ── */
+        .order-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            box-shadow: var(--sh);
+            overflow: hidden;
+            transition: box-shadow .2s, transform .18s;
+            animation: fadeUp .32s ease both;
+        }
+
+            .order-card:hover {
+                box-shadow: var(--sh-h);
+                transform: translateY(-2px);
+            }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card:nth-child(2) {
+            animation-delay: .05s;
+        }
+
+        .order-card:nth-child(3) {
+            animation-delay: .10s;
+        }
+
+        .order-card:nth-child(4) {
+            animation-delay: .15s;
+        }
+
+        .order-card:nth-child(5) {
+            animation-delay: .20s;
+        }
+
+        /* Card top strip */
+        .oc-strip {
+            height: 3px;
+            background: var(--border);
+        }
+
+            .oc-strip.confirming {
+                background: #f0b429;
+            }
+
+            .oc-strip.processing {
+                background: #3b82f6;
+            }
+
+            .oc-strip.ondelivering {
+                background: #10b981;
+            }
+
+            .oc-strip.success {
+                background: #10b981;
+            }
+
+            .oc-strip.failed {
+                background: #ef4444;
+            }
+
+        /* Card header */
+        .oc-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .oc-head-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .oc-code {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--txt-3);
+            letter-spacing: .3px;
+        }
+
+        .oc-date {
+            font-size: 12px;
+            color: var(--txt-3);
+        }
+
+        .oc-head-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .2px;
+        }
+
+            .status-badge.confirming {
+                background: #fff8e1;
+                color: #b45309;
+            }
+
+            .status-badge.processing {
+                background: #eff6ff;
+                color: #1d4ed8;
+            }
+
+            .status-badge.ondelivering {
+                background: #ecfdf5;
+                color: #065f46;
+            }
+
+            .status-badge.success {
+                background: #ecfdf5;
+                color: #065f46;
+            }
+
+            .status-badge.failed {
+                background: #fef2f2;
+                color: #991b1b;
+            }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-badge.confirming .status-dot {
+            background: #b45309;
+        }
+
+        .status-badge.processing .status-dot {
+            background: #1d4ed8;
+            animation: pulse .9s infinite;
+        }
+
+        .status-badge.ondelivering .status-dot {
+            background: #065f46;
+            animation: pulse .9s infinite;
+        }
+
+        .status-badge.success .status-dot {
+            background: #065f46;
+        }
+
+        .status-badge.failed .status-dot {
+            background: #991b1b;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .3;
+            }
+        }
+
+        .pay-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            background: var(--bg);
+            color: var(--txt-2);
+            border: 1px solid var(--border);
+        }
+
+        /* Card body — product thumbnails */
+        .oc-body {
+            padding: 0 20px 14px;
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .oc-products {
+            flex: 1;
+        }
+
+        .oc-product-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 0;
+            border-bottom: 1px solid #f3f3f3;
+        }
+
+            .oc-product-row:last-child {
+                border-bottom: none;
+            }
+
+        /* product thumbnail */
+        .oc-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            flex-shrink: 0;
+        }
+
+        .oc-thumb-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .oc-prod-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .oc-prod-name {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--txt);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .oc-prod-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .oc-prod-qty {
+            font-size: 12px;
+            color: var(--txt-3);
+        }
+
+        .oc-prod-price {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Delivery info */
+        .oc-info {
+            min-width: 190px;
+            max-width: 220px;
+            padding: 10px 14px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--txt-2);
+        }
+
+        .oc-info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            padding: 3px 0;
+        }
+
+        .oc-info-ico {
+            flex-shrink: 0;
+            font-size: 13px;
+            margin-top: 1px;
+        }
+
+        .oc-info-val {
+            font-weight: 500;
+            color: var(--txt);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        /* Card footer */
+        .oc-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid #f3f3f3;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .oc-total-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .oc-total-label {
+            font-size: 13px;
+            color: var(--txt-3);
+        }
+
+        .oc-total-price {
+            font-family: 'DM Sans', sans-serif; /* đổi sang DM Sans */
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0;
+        }
+
+        .oc-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .oc-btn {
+            padding: 7px 16px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid;
+            transition: all .15s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .oc-btn-ghost {
+            border-color: var(--border);
+            background: transparent;
+            color: var(--txt-2);
+        }
+
+            .oc-btn-ghost:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+                background: var(--accent-lt);
+            }
+
+        .oc-btn-danger {
+            border-color: #fca5a5;
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+            .oc-btn-danger:hover {
+                background: #fee2e2;
+                border-color: #f87171;
+            }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 28px;
+        }
+
+        .page-btn {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border);
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--txt-2);
+            cursor: pointer;
+            background: var(--card);
+            transition: all .15s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+            .page-btn:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+            .page-btn.active {
+                border-color: var(--accent);
+                background: var(--accent);
+                color: #fff;
+            }
+
+            .page-btn:disabled {
+                opacity: .35;
+                cursor: not-allowed;
+            }
+
+        /* Empty & Loading */
+        .empty-state {
+            text-align: center;
+            padding: 72px 24px;
+            background: var(--card);
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+        }
+
+        .empty-icon {
+            font-size: 52px;
+            margin-bottom: 16px;
+            opacity: .6;
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--txt-2);
+            margin: 0 0 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: var(--txt-3);
+            margin: 0;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 72px 24px;
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 2.5px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin: 0 auto 14px;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.48);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(2px);
+        }
+
+            .modal-overlay.show {
+                display: flex;
+            }
+
+        .modal-box {
+            background: var(--card);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 88vh;
+            overflow-y: auto;
+            animation: popIn .28s cubic-bezier(.175,.885,.32,1.275);
+            box-shadow: 0 24px 60px rgba(0,0,0,.18);
+        }
+
+        @@keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(.9) translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--card);
+            z-index: 1;
+        }
+
+        .modal-head-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .modal-head h3 {
+            font-family: 'DM Sans', sans-serif; /* đổi từ Playfair sang DM Sans */
+            font-size: 15px; /* giảm size vì order code dài */
+            font-weight: 700;
+            color: var(--txt);
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -.1px;
+            word-break: break-all; /* tránh overflow nếu code quá dài */
+        }
+
+        .modal-head-sub {
+            font-size: 12px;
+            color: var(--txt-3);
+        }
+
+        .modal-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--bg);
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s;
+            flex-shrink: 0;
+            color: var(--txt-2);
+        }
+
+            .modal-close:hover {
+                background: #e5e5e5;
+            }
+
+        .modal-body {
+            padding: 20px 24px 24px;
+        }
+
+        .modal-section {
+            margin-bottom: 22px;
+        }
+
+        .modal-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--txt-3);
+            margin-bottom: 12px;
+        }
+
+        /* Status track */
+        .status-track {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .track-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .track-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--border);
+            transition: all .3s;
+            position: relative;
+            z-index: 1;
+        }
+
+            .track-dot.done {
+                border-color: #10b981;
+                background: #10b981;
+                color: #fff;
+            }
+
+            .track-dot.active {
+                border-color: var(--accent);
+                background: var(--accent);
+                color: #fff;
+            }
+
+            .track-dot.failed {
+                border-color: #ef4444;
+                background: #ef4444;
+                color: #fff;
+            }
+
+        .track-label {
+            font-size: 10px;
+            color: var(--txt-3);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+            .track-label.done {
+                color: #10b981;
+                font-weight: 600;
+            }
+
+            .track-label.active {
+                color: var(--accent);
+                font-weight: 600;
+            }
+
+            .track-label.failed {
+                color: #ef4444;
+                font-weight: 600;
+            }
+
+        .track-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            margin-top: -14px;
+            transition: background .3s;
+        }
+
+            .track-line.done {
+                background: #10b981;
+            }
+
+        /* Modal info grid */
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-info-row {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+            .modal-info-row .lbl {
+                font-size: 11px;
+                color: var(--txt-3);
+                text-transform: uppercase;
+                letter-spacing: .5px;
+            }
+
+            .modal-info-row .val {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--txt);
+            }
+
+        /* Modal product rows with image */
+        .modal-product-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f3f3;
+        }
+
+            .modal-product-row:last-child {
+                border-bottom: none;
+            }
+
+        .modal-prod-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            flex-shrink: 0;
+        }
+
+        .modal-prod-img-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .modal-prod-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modal-prod-name {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--txt);
+        }
+
+        .modal-prod-label {
+            font-size: 11px;
+            color: var(--txt-3);
+            margin-top: 1px;
+        }
+
+        .modal-prod-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .modal-prod-qty {
+            font-size: 12px;
+            color: var(--txt-3);
+        }
+
+        .modal-prod-sub {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .modal-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 14px 0 0;
+            border-top: 1.5px solid var(--accent);
+            margin-top: 6px;
+        }
+
+            .modal-total-row .lbl2 {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--txt-2);
+            }
+
+            .modal-total-row .val2 {
+                font-family: 'DM Sans', sans-serif;
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--accent);
+                font-variant-numeric: tabular-nums;
+            }
+
+        /* Responsive */
+        @@media(max-width:700px) {
+            .oc-body {
+                flex-direction: column;
+            }
+
+            .oc-info {
+                min-width: unset;
+                max-width: 100%;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .filter-search {
+                min-width: unset;
+                width: 100%;
+            }
+        }
+
+        @@media(max-width:480px) {
+            .oh-wrap {
+                padding: 0 14px;
+                margin-top: 20px;
+            }
+
+            .oc-head {
+                padding: 12px 14px 10px;
+            }
+
+            .oc-body {
+                padding: 0 14px 12px;
+            }
+
+            .oc-foot {
+                padding: 10px 14px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .modal-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="breadcrumb" style="padding:10px 32px;font-size:13px;color:#999;background:#fff;border-bottom:1px solid #eee;font-family:'DM Sans',sans-serif;">
+    <a href="/" style="color:#999;text-decoration:none;">Trang chủ</a>
+    <span style="margin:0 6px;">›</span>
+    <span style="color:var(--accent,#e55a00);font-weight:500;">Lịch sử đơn hàng</span>
+</div>
+
+<div class="oh-wrap">
+
+    <div class="oh-header">
+        <div class="oh-header-left">
+            <h1>Lịch sử đơn hàng</h1>
+            <p>Theo dõi và quản lý tất cả đơn hàng của bạn</p>
+        </div>
+        <span class="oh-count-badge" id="oh-count"></span>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-search">
+            <span class="search-ico">🔍</span>
+            <input type="text" id="search-input" placeholder="Tìm theo mã đơn, tên người nhận..." />
+        </div>
+        <div class="status-tabs">
+            <button class="status-tab active" data-status="">Tất cả</button>
+            <button class="status-tab" data-status="Confirming">Chờ xác nhận</button>
+            <button class="status-tab" data-status="Processing">Đang xử lý</button>
+            <button class="status-tab" data-status="OnDelivering">Đang giao</button>
+            <button class="status-tab" data-status="Success">Hoàn thành</button>
+            <button class="status-tab" data-status="Failed">Thất bại</button>
+        </div>
+    </div>
+
+    <!-- Order List -->
+    <div class="order-list" id="order-list">
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p style="color:#aaa;font-size:14px;font-family:'DM Sans',sans-serif;">Đang tải đơn hàng...</p>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div class="modal-head-inner">
+                <h3 id="modal-title">Chi tiết đơn hàng</h3>
+                <span class="modal-head-sub" id="modal-subtitle"></span>
+            </div>
+            <button class="modal-close" onclick="closeModalDirect()">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+        let currentStatus = '';
+        let currentSearch = '';
+        let searchTimer = null;
+
+        const STATUS_MAP = {
+            'Confirming':   { label: 'Chờ xác nhận', cls: 'confirming',   icon: '⏳' },
+            'Processing':   { label: 'Đang xử lý',   cls: 'processing',   icon: '⚙️' },
+            'OnDelivering': { label: 'Đang giao',     cls: 'ondelivering', icon: '🚚' },
+            'Success':      { label: 'Hoàn thành',    cls: 'success',      icon: '✅' },
+            'Failed':       { label: 'Thất bại',      cls: 'failed',       icon: '❌' },
+        };
+
+        const PAY_MAP = {
+            'COD':          { label: 'COD', icon: '🚚' },
+            'BankTransfer': { label: 'Chuyển khoản', icon: '🏦' },
+        };
+
+        const STATUSES = ['Confirming', 'Processing', 'OnDelivering', 'Success'];
+
+        // ── Fetch ──
+        async function fetchOrders(page = 1, status = '', search = '') {
+            const container = document.getElementById('order-list');
+            container.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p style="color:#aaa;font-size:14px;">Đang tải...</p></div>`;
+
+            const params = new URLSearchParams({ handler: 'Orders', page, size: 10, isSelf: true });
+            if (status) params.append('status', status);
+            if (search) params.append('searchKeyword', search);
+
+            try {
+                const res = await fetch(`/OrderHistory?${params}`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                renderOrders(data.data);
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Không thể tải dữ liệu</h3><p>${e.message}</p></div>`;
+            }
+        }
+
+        // ── Render ──
+        function renderOrders(data) {
+            const container = document.getElementById('order-list');
+            const countEl   = document.getElementById('oh-count');
+
+            if (!data || data.items.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><h3>Chưa có đơn hàng nào</h3><p>Bạn chưa có đơn hàng phù hợp với bộ lọc này.</p></div>`;
+                countEl.style.display = 'none';
+                renderPagination(0, 1, 1);
+                return;
+            }
+
+            countEl.textContent = data.total + ' đơn hàng';
+            countEl.style.display = 'inline-block';
+
+            container.innerHTML = data.items.map((o, idx) => {
+                const st  = STATUS_MAP[o.status] || { label: o.status, cls: 'confirming', icon: '❓' };
+                const pay = PAY_MAP[o.paymentMethod] || { label: o.paymentMethod, icon: '💳' };
+
+                const productsHtml = o.details.slice(0, 3).map(d => {
+                    const thumbHtml = d.productImage
+                        ? `<img class="oc-thumb" src="${d.productImage}" alt="${d.productName}" loading="lazy" />`
+                        : `<div class="oc-thumb-placeholder">🛍️</div>`;
+                    return `
+                    <div class="oc-product-row">
+                        ${thumbHtml}
+                        <div class="oc-prod-info">
+                            <div class="oc-prod-name">${d.productName}</div>
+                            <div class="oc-prod-meta">
+                                <span class="oc-prod-qty">x${d.quantity}</span>
+                                <span class="oc-prod-price">${fmt(d.price)}/sp</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                const moreCount = o.details.length - 3;
+
+                return `
+                <div class="order-card" style="animation-delay:${idx * 0.05}s">
+                    <div class="oc-strip ${st.cls}"></div>
+                    <div class="oc-head">
+                        <div class="oc-head-left">
+                            <div class="oc-code">#${o.orderCode}</div>
+                            <div class="oc-date">📅 ${o.orderDate}</div>
+                        </div>
+                        <div class="oc-head-right">
+                            <span class="pay-badge">${pay.icon} ${pay.label}</span>
+                            <span class="status-badge ${st.cls}">
+                                <span class="status-dot"></span>${st.icon} ${st.label}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="oc-body">
+                        <div class="oc-products">
+                            ${productsHtml}
+                            ${moreCount > 0 ? `<div style="font-size:12px;color:#aaa;padding:5px 0 2px">+ ${moreCount} sản phẩm khác</div>` : ''}
+                        </div>
+                        <div class="oc-info">
+                            <div class="oc-info-row"><span class="oc-info-ico">👤</span><span class="oc-info-val">${o.customerName}</span></div>
+                            <div class="oc-info-row"><span class="oc-info-ico">📞</span><span class="oc-info-val">${o.phoneNumber}</span></div>
+                            <div class="oc-info-row"><span class="oc-info-ico">📍</span><span class="oc-info-val" style="font-weight:400;color:#666;">${o.address}</span></div>
+                        </div>
+                    </div>
+                    <div class="oc-foot">
+                        <div class="oc-total-wrap">
+                            <span class="oc-total-label">Tổng tiền</span>
+                            <span class="oc-total-price">${fmt(o.totalAmount)}</span>
+                        </div>
+                        <div class="oc-actions">
+                            <button class="oc-btn oc-btn-ghost" onclick='openModal(${JSON.stringify(o)})'>Xem chi tiết</button>
+                            ${o.status === 'Confirming' ? `<button class="oc-btn oc-btn-danger">Hủy đơn</button>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            renderPagination(data.total, data.page, data.totalPages);
+        }
+
+        // ── Pagination ──
+        function renderPagination(total, page, totalPages) {
+            const el = document.getElementById('pagination');
+            if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+            let html = `<button class="page-btn" onclick="goPage(${page-1})" ${page<=1?'disabled':''}>‹</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+            }
+            html += `<button class="page-btn" onclick="goPage(${page+1})" ${page>=totalPages?'disabled':''}>›</button>`;
+            el.innerHTML = html;
+        }
+
+        function goPage(p) {
+            currentPage = p;
+            fetchOrders(currentPage, currentStatus, currentSearch);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── Tabs ──
+        document.querySelectorAll('.status-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentStatus = this.dataset.status;
+                currentPage = 1;
+                fetchOrders(currentPage, currentStatus, currentSearch);
+            });
+        });
+
+        // ── Search ──
+        document.getElementById('search-input').addEventListener('input', function () {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                currentSearch = this.value.trim();
+                currentPage = 1;
+                fetchOrders(currentPage, currentStatus, currentSearch);
+            }, 450);
+        });
+
+        // ── Modal ──
+        function openModal(order) {
+            const st  = STATUS_MAP[order.status] || { label: order.status, cls: 'confirming', icon: '❓' };
+            const pay = PAY_MAP[order.paymentMethod] || { label: order.paymentMethod, icon: '💳' };
+
+            document.getElementById('modal-title').textContent   = '#' + order.orderCode;
+            document.getElementById('modal-subtitle').textContent = order.orderDate + ' · ' + pay.icon + ' ' + pay.label;
+
+            // Status track
+            const isFailed   = order.status === 'Failed';
+            const currentIdx = STATUSES.indexOf(order.status);
+
+            let trackHtml = '<div class="status-track">';
+            if (isFailed) {
+                trackHtml += `<div class="track-step"><div class="track-dot failed">✕</div><div class="track-label failed">Thất bại</div></div>`;
+            } else {
+                STATUSES.forEach((s, i) => {
+                    const sInfo    = STATUS_MAP[s];
+                    const isDone   = i < currentIdx;
+                    const isActive = i === currentIdx;
+                    const dotCls   = isDone ? 'done' : isActive ? 'active' : '';
+                    const lblCls   = dotCls;
+                    const icon     = isDone ? '✓' : isActive ? '●' : '';
+                    trackHtml += `
+                        <div class="track-step">
+                            <div class="track-dot ${dotCls}">${icon}</div>
+                            <div class="track-label ${lblCls}">${sInfo.label}</div>
+                        </div>`;
+                    if (i < STATUSES.length - 1)
+                        trackHtml += `<div class="track-line ${isDone ? 'done' : ''}"></div>`;
+                });
+            }
+            trackHtml += '</div>';
+
+            // Products with image
+            const productsHtml = order.details.map(d => {
+                const imgHtml = d.productImage
+                    ? `<img class="modal-prod-img" src="${d.productImage}" alt="${d.productName}" loading="lazy" />`
+                    : `<div class="modal-prod-img-placeholder">🛍️</div>`;
+                const labelHtml = d.label && d.label !== 'string'
+                    ? `<div class="modal-prod-label">${d.label}</div>` : '';
+                return `
+                <div class="modal-product-row">
+                    ${imgHtml}
+                    <div class="modal-prod-info">
+                        <div class="modal-prod-name">${d.productName}</div>
+                        ${labelHtml}
+                    </div>
+                    <div class="modal-prod-right">
+                        <div class="modal-prod-qty">x${d.quantity}</div>
+                        <div class="modal-prod-sub">${fmt(d.price * d.quantity)}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('modal-body').innerHTML = `
+                <div class="modal-section">
+                    <div class="modal-section-title">Trạng thái đơn hàng</div>
+                    ${trackHtml}
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Thông tin giao hàng</div>
+                    <div class="modal-info-grid">
+                        <div class="modal-info-row">
+                            <span class="lbl">Người nhận</span>
+                            <span class="val">${order.customerName}</span>
+                        </div>
+                        <div class="modal-info-row">
+                            <span class="lbl">Số điện thoại</span>
+                            <span class="val">${order.phoneNumber}</span>
+                        </div>
+                        <div class="modal-info-row" style="grid-column:1/-1">
+                            <span class="lbl">Địa chỉ</span>
+                            <span class="val">${order.address}</span>
+                        </div>
+                        ${order.note && order.note !== 'string' ? `
+                        <div class="modal-info-row" style="grid-column:1/-1">
+                            <span class="lbl">Ghi chú</span>
+                            <span class="val">${order.note}</span>
+                        </div>` : ''}
+                        <div class="modal-info-row">
+                            <span class="lbl">Thanh toán</span>
+                            <span class="val">${pay.icon} ${pay.label}</span>
+                        </div>
+                        <div class="modal-info-row">
+                            <span class="lbl">Ngày đặt</span>
+                            <span class="val">${order.orderDate}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Sản phẩm (${order.details.length})</div>
+                    ${productsHtml}
+                    <div class="modal-total-row">
+                        <span class="lbl2">Tổng cộng</span>
+                        <span class="val2">${fmt(order.totalAmount)}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-overlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+        }
+
+        function closeModalDirect() {
+            document.getElementById('modal-overlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+        document.addEventListener('DOMContentLoaded', () => fetchOrders());
+    </script>
+}

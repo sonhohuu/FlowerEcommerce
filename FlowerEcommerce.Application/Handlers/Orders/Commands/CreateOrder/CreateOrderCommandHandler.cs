@@ -54,7 +54,7 @@ public static class OrderCodeGenerator
         ? paymentMethod switch
         {
             PaymentMethod.COD => "COD",
-            PaymentMethod.BankTransfer => "BT",
+            PaymentMethod.BankTransfer => "BTF",
             _ => "NF"
         }
         : "NF";

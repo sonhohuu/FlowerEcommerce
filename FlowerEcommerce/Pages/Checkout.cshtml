@@ -85,10 +85,6 @@
             margin-bottom: 16px;
         }
 
-            .form-group.full {
-                grid-column: 1 / -1;
-            }
-
             .form-group label {
                 font-size: 13px;
                 font-weight: 600;
@@ -203,7 +199,6 @@
             color: #e55a00;
         }
 
-        /* Bank transfer detail */
         .bank-detail {
             display: none;
             margin-top: 16px;
@@ -225,7 +220,23 @@
                 color: #111;
             }
 
-        /* ── ORDER SUMMARY (RIGHT COLUMN) ── */
+        /* ── API ERROR ── */
+        .api-error {
+            display: none;
+            background: #fdecea;
+            border: 1.5px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #721c24;
+            margin-top: 12px;
+        }
+
+            .api-error.show {
+                display: block;
+            }
+
+        /* ── ORDER SUMMARY ── */
         .order-summary {
             position: sticky;
             top: 20px;
@@ -335,7 +346,6 @@
             font-size: 14px;
         }
 
-        /* Totals */
         .summary-totals {
             padding: 16px 24px;
             border-top: 1px solid #ebebeb;
@@ -391,6 +401,12 @@
 
             .submit-order-btn:active {
                 transform: translateY(0);
+            }
+
+            .submit-order-btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
             }
 
             .submit-order-btn .spinner {
@@ -466,6 +482,19 @@
             }
         }
 
+        .success-order-code {
+            font-family: 'DM Sans', 'Oswald', sans-serif;
+            font-size: 13px;
+            color: #e55a00;
+            background: #fff3ed;
+            padding: 5px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 14px;
+            letter-spacing: .3px;
+            font-variant-numeric: tabular-nums;
+        }
+
         .success-box h2 {
             font-family: 'Oswald', sans-serif;
             font-size: 24px;
@@ -481,9 +510,16 @@
             line-height: 1.6;
         }
 
+        .success-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .success-box .back-btn {
             display: inline-block;
-            padding: 12px 32px;
+            padding: 12px 24px;
             background: #e55a00;
             color: #fff;
             border-radius: 6px;
@@ -497,6 +533,25 @@
 
             .success-box .back-btn:hover {
                 background: #c44e00;
+            }
+
+        .success-box .history-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #fff;
+            color: #e55a00;
+            border: 2px solid #e55a00;
+            border-radius: 6px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+            .success-box .history-btn:hover {
+                background: #fff3ed;
             }
 
         /* ── RESPONSIVE ── */
@@ -561,24 +616,26 @@
                 <div class="form-group">
                     <label>Họ và tên <span class="req">*</span></label>
                     <input type="text" id="receiver-name" placeholder="Nguyễn Văn A" />
-                    <span class="err-msg" id="err-name">Vui lòng nhập họ tên</span>
+                    <span class="err-msg" id="err-name">Vui lòng nhập họ tên (ít nhất 2 ký tự)</span>
                 </div>
                 <div class="form-group">
                     <label>Số điện thoại <span class="req">*</span></label>
                     <input type="tel" id="receiver-phone" placeholder="0987 000 000" />
-                    <span class="err-msg" id="err-phone">Vui lòng nhập số điện thoại hợp lệ</span>
+                    <span class="err-msg" id="err-phone">Vui lòng nhập số điện thoại hợp lệ (10-11 số)</span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Địa chỉ giao hàng <span class="req">*</span></label>
-                <input type="text" id="receiver-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố" />
+                <input type="text" id="receiver-address"
+                       placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố" />
                 <span class="err-msg" id="err-address">Vui lòng nhập địa chỉ giao hàng</span>
             </div>
 
             <div class="form-group">
                 <label>Ghi chú thêm</label>
-                <textarea id="receiver-note" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao, chọn size M..."></textarea>
+                <textarea id="receiver-note"
+                          placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."></textarea>
             </div>
         </div>
 
@@ -590,19 +647,18 @@
             </h2>
 
             <div class="payment-options">
-                <!-- COD -->
+                <!-- COD = 0 -->
                 <div class="payment-option">
-                    <input type="radio" name="payment" id="pay-cod" value="cod" checked />
+                    <input type="radio" name="payment" id="pay-cod" value="0" checked />
                     <label for="pay-cod">
                         <span class="payment-icon">🚚</span>
                         <span class="payment-name">COD</span>
                         <span class="payment-desc">Thanh toán khi nhận hàng</span>
                     </label>
                 </div>
-
-                <!-- Chuyển khoản -->
+                <!-- BankTransfer = 1 -->
                 <div class="payment-option">
-                    <input type="radio" name="payment" id="pay-bank" value="bank" />
+                    <input type="radio" name="payment" id="pay-bank" value="1" />
                     <label for="pay-bank">
                         <span class="payment-icon">🏦</span>
                         <span class="payment-name">Chuyển khoản</span>
@@ -611,7 +667,6 @@
                 </div>
             </div>
 
-            <!-- Bank detail (hiện khi chọn chuyển khoản) -->
             <div class="bank-detail" id="bank-detail">
                 <b>Thông tin tài khoản:</b><br>
                 Ngân hàng: <b>Vietcombank</b><br>
@@ -620,6 +675,8 @@
                 Nội dung CK: <b>[Họ tên] + [SĐT]</b><br>
                 <span style="color:#e55a00;font-size:13px;">⚠ Đơn hàng sẽ được xử lý sau khi xác nhận thanh toán.</span>
             </div>
+
+            <div class="api-error" id="api-error"></div>
         </div>
     </div>
 
@@ -653,30 +710,33 @@
             </button>
         </div>
     </div>
-
 </div>
 
 <!-- SUCCESS OVERLAY -->
 <div class="success-overlay" id="success-overlay">
     <div class="success-box">
         <div class="success-icon">🎉</div>
+        <div class="success-order-code" id="success-order-code"></div>
         <h2>Đặt hàng thành công!</h2>
         <p id="success-msg">Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.</p>
-        <a href="/Products" class="back-btn" onclick="clearCartAfterOrder()">Tiếp tục mua sắm</a>
+        <div class="success-actions">
+            <a href="/OrderHistory" class="history-btn" onclick="clearCartAfterOrder()">Xem đơn hàng</a>
+            <a href="/Products" class="back-btn" onclick="clearCartAfterOrder()">Tiếp tục mua sắm</a>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        // ── Load cart from localStorage ──
+        // ── Load cart ──
         function loadCheckoutCart() {
-            const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+            const cart  = JSON.parse(localStorage.getItem('cart') || '{}');
             const items = Object.values(cart);
             const container = document.getElementById('checkout-items');
 
             if (items.length === 0) {
                 container.innerHTML = '<div class="empty-checkout-cart">🛒<br><br>Giỏ hàng đang trống</div>';
-                document.getElementById('subtotal-price').textContent = '0đ';
+                document.getElementById('subtotal-price').textContent    = '0đ';
                 document.getElementById('grand-total-price').textContent = '0đ';
                 return;
             }
@@ -687,81 +747,124 @@
                 <div class="summary-item">
                     ${i.image
                         ? `<img src="${i.image}" alt="${i.name}" />`
-                        : `<div class="summary-item-emoji">🛍️</div>`
-                    }
+                        : `<div class="summary-item-emoji">🛍️</div>`}
                     <div class="summary-item-info">
                         <div class="summary-item-name">${i.name}</div>
                         <div class="summary-item-qty">x${i.qty}</div>
                     </div>
                     <div class="summary-item-price">${fmt(i.price * i.qty)}</div>
-                </div>
-            `).join('');
+                </div>`).join('');
 
-            document.getElementById('subtotal-price').textContent = fmt(total);
+            document.getElementById('subtotal-price').textContent    = fmt(total);
             document.getElementById('grand-total-price').textContent = fmt(total);
         }
 
-        // ── Payment method toggle ──
+        // ── Payment toggle ──
         document.querySelectorAll('input[name="payment"]').forEach(radio => {
             radio.addEventListener('change', function () {
-                const bankDetail = document.getElementById('bank-detail');
-                bankDetail.classList.toggle('show', this.value === 'bank');
+                document.getElementById('bank-detail').classList.toggle('show', this.value === '1');
             });
         });
 
         // ── Validation ──
         function validateField(id, errId, checkFn) {
-            const el = document.getElementById(id);
+            const el  = document.getElementById(id);
             const err = document.getElementById(errId);
-            const ok = checkFn(el.value.trim());
+            const ok  = checkFn(el.value.trim());
             el.classList.toggle('error', !ok);
             err.style.display = ok ? 'none' : 'block';
             return ok;
         }
 
         function validate() {
-            const nameOk = validateField('receiver-name', 'err-name', v => v.length >= 2);
-            const phoneOk = validateField('receiver-phone', 'err-phone', v => /^[0-9]{9,11}$/.test(v.replace(/\s/g, '')));
-            const addrOk = validateField('receiver-address', 'err-address', v => v.length >= 5);
+            const nameOk  = validateField('receiver-name',    'err-name',    v => v.length >= 2);
+            const phoneOk = validateField('receiver-phone',   'err-phone',   v => /^[0-9]{10,11}$/.test(v.replace(/\s/g, '')));
+            const addrOk  = validateField('receiver-address', 'err-address', v => v.length >= 5);
             return nameOk && phoneOk && addrOk;
         }
 
+        // ── Build payload theo đúng schema API ──
+        function buildPayload() {
+            const cart  = JSON.parse(localStorage.getItem('cart') || '{}');
+            const items = Object.values(cart);
+            const paymentMethod = parseInt(document.querySelector('input[name="payment"]:checked').value); // 0 = COD, 1 = BankTransfer
+
+            return {
+                customerName:  document.getElementById('receiver-name').value.trim(),
+                phoneNumber:   document.getElementById('receiver-phone').value.trim().replace(/\s/g, ''),
+                address:       document.getElementById('receiver-address').value.trim(),
+                note:          document.getElementById('receiver-note').value.trim() || null,
+                paymentMethod: paymentMethod,   // int: 0 | 1
+                items: items.map(i => ({
+                    productId: typeof i.id === 'string' ? parseInt(i.id.split('_')[0], 10) : i.id,
+                    quantity:  i.qty,
+                    label:     i.label || null,
+                    price:     i.price
+                }))
+            };
+        }
+
         // ── Place order ──
-        function placeOrder() {
+        async function placeOrder() {
             if (!validate()) return;
 
             const cart = JSON.parse(localStorage.getItem('cart') || '{}');
             if (Object.keys(cart).length === 0) {
-                alert('Giỏ hàng đang trống!');
+                showToast('warning', 'Giỏ hàng trống', 'Vui lòng thêm sản phẩm trước khi đặt hàng.');
                 return;
             }
 
-            // Loading state
             const btn = document.getElementById('place-order-btn');
-            document.getElementById('btn-text').style.display = 'none';
+            document.getElementById('btn-text').style.display    = 'none';
             document.getElementById('btn-spinner').style.display = 'inline-block';
             btn.disabled = true;
 
-            // Simulate API call — replace with real fetch to your order API
-            setTimeout(() => {
-                const payMethod = document.querySelector('input[name="payment"]:checked').value;
-                const msg = payMethod === 'bank'
-                    ? 'Vui lòng chuyển khoản theo thông tin đã cung cấp.<br>Đơn hàng sẽ được xử lý sau khi xác nhận.'
-                    : 'Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.';
+            try {
+                const res = await fetch('/Checkout?handler=PlaceOrder', {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:    JSON.stringify(buildPayload())
+                });
 
-                document.getElementById('success-msg').innerHTML = msg;
-                document.getElementById('success-overlay').classList.add('show');
+                if (res.status === 401) {
+                    showToast('info', 'Chưa đăng nhập',
+                        'Vui lòng <a href="/Login?returnUrl=/Checkout">đăng nhập</a> để đặt hàng.', 0);
+                    return;
+                }
 
-                // Reset button
-                document.getElementById('btn-text').style.display = 'inline';
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    const orderCode = data.data?.orderCode ?? '';
+                    document.getElementById('success-order-code').textContent =
+                        orderCode ? '#' + orderCode : '';
+
+                    const payVal = parseInt(document.querySelector('input[name="payment"]:checked').value);
+                    document.getElementById('success-msg').innerHTML = payVal === 1
+                        ? 'Vui lòng chuyển khoản theo thông tin đã cung cấp.<br>Đơn hàng sẽ được xử lý sau khi xác nhận.'
+                        : 'Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.';
+
+                    document.getElementById('success-overlay').classList.add('show');
+                } else {
+                    const errMsg = data.message
+                        || (data.validationErrors
+                            ? Object.values(data.validationErrors).flat().join(' · ')
+                            : null)
+                        || 'Đặt hàng không thành công. Vui lòng thử lại.';
+
+                    showToast('error', 'Đặt hàng thất bại', errMsg);
+                }
+            } catch {
+                showToast('error', 'Lỗi kết nối', 'Không thể kết nối máy chủ. Vui lòng thử lại sau.');
+            } finally {
+                document.getElementById('btn-text').style.display    = 'inline';
                 document.getElementById('btn-spinner').style.display = 'none';
                 btn.disabled = false;
-            }, 1200);
+            }
         }
 
         function clearCartAfterOrder() {
             localStorage.removeItem('cart');
-            // Refresh cart badge if site.js is loaded
             if (typeof refreshCart === 'function') refreshCart();
         }
 
@@ -769,13 +872,10 @@
         document.getElementById('receiver-name').addEventListener('blur', () =>
             validateField('receiver-name', 'err-name', v => v.length >= 2));
         document.getElementById('receiver-phone').addEventListener('blur', () =>
-            validateField('receiver-phone', 'err-phone', v => /^[0-9]{9,11}$/.test(v.replace(/\s/g, ''))));
+            validateField('receiver-phone', 'err-phone', v => /^[0-9]{10,11}$/.test(v.replace(/\s/g, ''))));
         document.getElementById('receiver-address').addEventListener('blur', () =>
             validateField('receiver-address', 'err-address', v => v.length >= 5));
 
-        // ── Init ──
-        document.addEventListener('DOMContentLoaded', function () {
-            loadCheckoutCart();
-        });
+        document.addEventListener('DOMContentLoaded', loadCheckoutCart);
     </script>
 }

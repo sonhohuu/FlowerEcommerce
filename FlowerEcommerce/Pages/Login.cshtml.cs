@@ -8,12 +8,10 @@ namespace FlowerEcommerce.View.Pages;
 public class LoginModel : PageModel 
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IConfiguration _config;
 
-    public LoginModel(IHttpClientFactory httpClientFactory, IConfiguration config)
+    public LoginModel(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _config = config;
     }
 
     [BindProperty]
@@ -50,7 +48,7 @@ public class LoginModel : PageModel
         try
         {
             var client = _httpClientFactory.CreateClient("Api");
-            var endpoint = $"/api/auth/login";
+            var endpoint = $"api/auth/login";
 
             var payload = new LoginApiDto { Username = Input.UserName, Password = Input.Password };
             using var response = await client.PostAsJsonAsync(endpoint, payload);

@@ -15,7 +15,7 @@ public class CategoryApiService : ICategoryApiService
     public async Task<List<CategoryViewModel>> GetCategoriesAsync()
     {
         var response = await _httpClient
-            .GetFromJsonAsync<ApiResponse<List<CategoryApiDto>>>("/api/category");
+            .GetFromJsonAsync<ApiResponse<List<CategoryApiDto>>>("api/category");
 
         if (response?.Success != true || response.Data is null)
             return new List<CategoryViewModel>();

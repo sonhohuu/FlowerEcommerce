@@ -20,7 +20,8 @@ public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, TResult<IPa
             predicate: o => (string.IsNullOrEmpty(request.SearchKeyword) 
                             || o.CustomerName.Contains(request.SearchKeyword) 
                             || o.OrderCode.Contains(request.SearchKeyword)) &&
-                           (!request.IsSelf.HasValue || o.UserId == _currentUserService.UserId),
+                            (!request.IsSelf.HasValue || o.UserId == _currentUserService.UserId) &&
+                            (!request.Status.HasValue || o.Status == request.Status),
             selector: o => new OrderDto
             {
                 Id = o.Id,
@@ -37,6 +38,7 @@ public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, TResult<IPa
                 Details = o.Items.Select(od => new OrderDetailDto
                 {
                     ProductName = od.Product.Name,
+                    ProductImage = od.Product.FileAttachments.FirstOrDefault(x => x.IsMain).SecureUrl,
                     Quantity = od.Quantity,
                     Label = od.Label,
                     Price = od.Price,

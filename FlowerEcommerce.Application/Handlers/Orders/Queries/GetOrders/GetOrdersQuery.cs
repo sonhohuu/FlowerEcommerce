@@ -4,6 +4,7 @@ public class GetOrdersQuery : PaginationRequest, IRequest<TResult<IPaginate<Orde
 {
     public string? SearchKeyword { get; set; }
     public bool? IsSelf { get; set; }
+    public OrderStatus? Status { get; set; }
 }
 
 public class OrderDto
@@ -26,6 +27,7 @@ public class OrderDto
 public class OrderDetailDto
 {
     public string ProductName { get; set; } = string.Empty;
+    public string? ProductImage { get; set; }
     public int Quantity { get; set; }
     public string? Label { get; set; }
     public decimal Price { get; set; }

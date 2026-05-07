@@ -20,6 +20,7 @@
                 <span style="color: #fff; font-weight: 500;">
                     👤 @Context.Session.GetString("username")
                 </span>
+                <a href="/OrderHistory">Lịch sử mua hàng</a>
                 <a href="/Logout">Đăng xuất</a>
             }
             else
@@ -46,6 +47,7 @@
             <a href="/Products">Sản phẩm</a>
             <a href="/Contact">Liên hệ</a>
             <a href="/News">Tin tức</a>
+            <a href="/Checkout">Giỏ hàng</a>
         </div>
         <div class="nav-icons">
             <button onclick="toggleSearch()" title="Tìm kiếm">🔍</button>
@@ -129,8 +131,8 @@
         </div>
     </div>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast"></div>
+    @* <!-- TOAST -->
+    <div class="toast" id="toast"></div> *@
 
 <script src="~/js/site.js"></script>
 @await RenderSectionAsync("Scripts", required: false)
