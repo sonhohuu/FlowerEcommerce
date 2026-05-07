@@ -74,7 +74,7 @@ public class AuthTokenHandler : DelegatingHandler
             using var refreshResponse = await client.PostAsJsonAsync(
                 "api/auth/refresh-token",
                 new { RefreshToken = refreshToken },
-                cancellationToken);
+                CancellationToken.None);
 
             _logger.LogInformation("Refresh API response: {Status}", refreshResponse.StatusCode);
 
@@ -85,11 +85,10 @@ public class AuthTokenHandler : DelegatingHandler
             }
 
             var result = await refreshResponse.Content
-                .ReadFromJsonAsync<ApiResponse<LoginData>>(cancellationToken: cancellationToken);
+                .ReadFromJsonAsync<ApiResponse<TokenModel>>(cancellationToken: CancellationToken.None);
 
-            if (result?.Data?.TokenModel is null) return null;
-
-            var token = result.Data.TokenModel;
+            if (result?.Data is null) return null;
+            var token = result.Data;
 
             // Dev  → Secure=false  → cookie hoạt động trên http://localhost
             // Prod → Secure=true   → bắt buộc https

@@ -8,10 +8,12 @@ namespace FlowerEcommerce.View.Pages;
 public class LoginModel : PageModel 
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHostEnvironment _env;
 
-    public LoginModel(IHttpClientFactory httpClientFactory)
+    public LoginModel(IHttpClientFactory httpClientFactory, IHostEnvironment env)
     {
         _httpClientFactory = httpClientFactory;
+        _env = env;
     }
 
     [BindProperty]
@@ -58,15 +60,16 @@ public class LoginModel : PageModel
             if (response.IsSuccessStatusCode && result?.Success == true && result.Data?.TokenModel != null)
             {
                 var token = result.Data.TokenModel;
+
+                var secure = !_env.IsDevelopment();
+
                 // accessToken — HttpOnly, expire theo thời gian server trả về
                 Response.Cookies.Append("access_token", token.AccessToken ?? "", new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = Input.RememberMe
-                        ? token.AccessTokenExpires
-                        : null   // session cookie nếu không nhớ
+                    Secure = secure,           // ← không cứng true
+                    SameSite = SameSiteMode.Lax, // ← đồng nhất với AuthTokenHandler
+                    Expires = Input.RememberMe ? token.AccessTokenExpires : null
                 });
 
                 // refreshToken — expire theo refreshTokenExpires
@@ -75,8 +78,8 @@ public class LoginModel : PageModel
                     Response.Cookies.Append("refresh_token", token.RefreshToken, new CookieOptions
                     {
                         HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict,
+                        Secure = secure,           // ← không cứng true
+                        SameSite = SameSiteMode.Lax, // ← đồng nhất
                         Expires = token.RefreshTokenExpires
                     });
                 }
