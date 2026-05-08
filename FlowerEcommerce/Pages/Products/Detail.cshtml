@@ -4,6 +4,15 @@
 @{
     ViewData["Title"] = Model.Product?.Name ?? "Chi tiết sản phẩm";
     var p = Model.Product;
+
+    // Reviews
+    var reviews = Model.Reviews;
+    var totalCount = reviews.TotalCount;
+    double avgScore = 0;
+    if (totalCount > 0 && reviews.Items.Any())
+    {
+        avgScore = reviews.Items.Sum(r => r.Score) / (double)totalCount;
+    }
 }
 
 @section Styles {
@@ -198,27 +207,6 @@
                 color: #222;
             }
 
-        /* Size price table */
-        .size-table {
-            font-size: 13.5px;
-            color: #555;
-            margin: 8px 0 16px;
-            line-height: 1.9;
-        }
-
-            .size-table .title {
-                font-weight: 700;
-                color: #222;
-                margin-bottom: 4px;
-            }
-
-            .size-table .note {
-                color: #e55a00;
-                font-size: 13px;
-                margin-top: 8px;
-                font-style: italic;
-            }
-
         /* ── Size Options ── */
         .size-options {
             display: flex;
@@ -367,21 +355,6 @@
                 background: #218838;
             }
 
-        .btn-hotline {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 11px 18px;
-            background: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
         /* ── Related Products ── */
         .related-section {
             max-width: 1200px;
@@ -449,6 +422,290 @@
                 color: #e55a00;
             }
 
+        /* ── Product Reviews ── */
+        .reviews-section {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+        }
+
+            .reviews-section h2 {
+                font-family: 'Oswald', sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: #111;
+                margin-bottom: 24px;
+                padding-bottom: 10px;
+                border-bottom: 3px solid #e55a00;
+                display: inline-block;
+            }
+
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            background: #fafafa;
+            border: 1px solid #ebebeb;
+            border-radius: 10px;
+            padding: 24px 32px;
+            margin-bottom: 28px;
+        }
+
+        .summary-score {
+            text-align: center;
+            min-width: 90px;
+        }
+
+            .summary-score .big-num {
+                font-size: 52px;
+                font-weight: 800;
+                color: #e55a00;
+                line-height: 1;
+            }
+
+            .summary-score .stars-display {
+                color: #f5a623;
+                font-size: 18px;
+                margin: 4px 0;
+                letter-spacing: 2px;
+            }
+
+            .summary-score .total-reviews {
+                font-size: 12px;
+                color: #888;
+            }
+
+        .summary-bars {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #555;
+        }
+
+            .bar-row .bar-label {
+                min-width: 36px;
+                text-align: right;
+                color: #f5a623;
+                font-size: 12px;
+            }
+
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: #e8e8e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f5a623, #e55a00);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .bar-count {
+            min-width: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .btn-load-more {
+            padding: 10px 28px;
+            border: 2px solid #e55a00;
+            background: transparent;
+            color: #e55a00;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .btn-load-more:hover {
+                background: #e55a00;
+                color: #fff;
+            }
+
+            .btn-load-more:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        /* Review list */
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .review-card {
+            border: 1px solid #ebebeb;
+            border-radius: 8px;
+            padding: 18px 20px;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+
+            .review-card:hover {
+                box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+            }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e55a00, #f5a623);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .review-meta {
+            flex: 1;
+        }
+
+            .review-meta .reviewer-name {
+                font-size: 14px;
+                font-weight: 700;
+                color: #111;
+            }
+
+        .review-stars {
+            color: #f5a623;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .review-comment {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Write review form */
+        .write-review {
+            background: #f8f8f8;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            padding: 24px 28px;
+        }
+
+            .write-review h3 {
+                font-size: 15px;
+                font-weight: 700;
+                color: #111;
+                margin: 0 0 18px;
+            }
+
+        .form-row {
+            margin-bottom: 14px;
+        }
+
+            .form-row label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 6px;
+            }
+
+            .form-row input[type="text"],
+            .form-row textarea {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+                color: #222;
+                background: #fff;
+                box-sizing: border-box;
+                transition: border-color 0.2s;
+                resize: vertical;
+            }
+
+                .form-row input[type="text"]:focus,
+                .form-row textarea:focus {
+                    outline: none;
+                    border-color: #e55a00;
+                }
+
+        /* Star rating input */
+        .star-rating-input {
+            display: flex;
+            gap: 6px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+            .star-rating-input input[type="radio"] {
+                display: none;
+            }
+
+            .star-rating-input label {
+                font-size: 28px;
+                color: #ddd;
+                cursor: pointer;
+                transition: color 0.15s, transform 0.15s;
+                margin: 0;
+                line-height: 1;
+            }
+
+                .star-rating-input label:hover,
+                .star-rating-input label:hover ~ label,
+                .star-rating-input input:checked ~ label {
+                    color: #f5a623;
+                    transform: scale(1.15);
+                }
+
+        .btn-submit-review {
+            padding: 11px 28px;
+            background: #e55a00;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+            margin-top: 6px;
+        }
+
+            .btn-submit-review:hover {
+                background: #c44e00;
+            }
+
+        .review-empty {
+            text-align: center;
+            padding: 32px;
+            color: #aaa;
+            font-size: 14px;
+            font-style: italic;
+        }
+
         @@media (max-width: 900px) {
             .detail-wrapper {
                 grid-template-columns: 1fr;
@@ -458,22 +715,26 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
+
+        @@media (max-width: 600px) {
+            .reviews-summary {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
     </style>
 }
 
 <!-- Breadcrumb -->
 <div class="breadcrumb">
     <a href="/">Trang chủ</a>
-
     <span> &gt; </span>
     <a href="/Products">Tất cả sản phẩm</a>
-
     @if (p?.Category != null)
     {
         <span> &gt; </span>
         <a href="/Products?category=@p.CategorySlug">@p.Category</a>
     }
-
     <span> &gt; </span>
     <span class="active">@p?.Name</span>
 </div>
@@ -625,7 +886,6 @@ else
                                 }
                                 else
                                 {
-
                                     <span>@rp.Price.ToString("N0")đ</span>
                                 }
                             </div>
@@ -635,17 +895,121 @@ else
             </div>
         </div>
     }
-}
+
+    <div class="reviews-section">
+        <h2>Đánh giá sản phẩm</h2>
+
+        <!-- Summary -->
+        <div class="reviews-summary">
+            <div class="summary-score">
+                <div class="big-num" id="avg-score">@(totalCount > 0 ? avgScore.ToString("F1") : "0.0")</div>
+                <div class="stars-display" id="avg-stars">
+                    @for (int s = 1; s <= 5; s++)
+                    {
+                        <span>@(s <= Math.Round(avgScore) ? "★" : "☆")</span>
+                    }
+                </div>
+                <div class="total-reviews">
+                    <span id="review-count">@totalCount</span> đánh giá
+                </div>
+            </div>
+            <div class="summary-bars">
+                @for (int s = 5; s >= 1; s--)
+                {
+                    var cnt = reviews.Items.Count(r => r.Score == s);
+                    var pct = totalCount > 0 ? cnt * 100 / totalCount : 0;
+                    <div class="bar-row">
+                        <span class="bar-label">@s ★</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" id="bar-@s" style="width:@pct%"></div>
+                        </div>
+                        <span class="bar-count" id="bar-count-@s">@cnt</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Review list -->
+        <div class="reviews-list" id="reviews-list">
+            @if (!reviews.Items.Any())
+            {
+                <div class="review-empty" id="empty-msg">Chưa có đánh giá nào. Hãy là người đầu tiên!</div>
+            }
+            else
+            {
+                @foreach (var r in reviews.Items)
+                {
+                    var initials = string.Join("", r.UserName?.Split(' ')
+                        .Where(w => w.Length > 0).Select(w => w[0])).ToUpper();
+                    initials = initials.Length > 2 ? initials[..2] : initials;
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">@initials</div>
+                            <div class="review-meta">
+                                <div class="reviewer-name">@r.UserName</div>
+                            </div>
+                            <div class="review-stars">
+                                @for (int s = 1; s <= 5; s++)
+                                {
+                                    <span>@(s <= r.Score ? "★" : "☆")</span>
+                                }
+                            </div>
+                        </div>
+                        <p class="review-comment">@r.Comment</p>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- Load more -->
+        @if (reviews.TotalPages > 1)
+        {
+            <div style="text-align:center;margin:12px 0 24px;">
+                <button class="btn-load-more" id="btn-load-more"
+                        onclick="loadMoreReviews()"
+                        data-page="2"
+                        data-total="@reviews.TotalPages">
+                    Xem thêm đánh giá
+                </button>
+            </div>
+        }
+
+        <!-- Write review form -->
+        <div class="write-review">
+            <h3>✍️ Viết đánh giá của bạn</h3>
+            <div class="form-row">
+                <label>Đánh giá *</label>
+                <div class="star-rating-input">
+                    @for (int s = 5; s >= 1; s--)
+                    {
+                        <input type="radio" name="rv-score" id="rv-star-@s" value="@s" />
+                        <label for="rv-star-@s" title="@s sao">★</label>
+                    }
+                </div>
+            </div>
+            <div class="form-row">
+                <label>Nhận xét *</label>
+                <textarea id="rv-comment" rows="4"
+                          placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."></textarea>
+            </div>
+            @Html.AntiForgeryToken()
+            <button class="btn-submit-review" id="btn-submit-rv" onclick="submitReview()">
+                Gửi đánh giá
+            </button>
+        </div>
+    </div>
+
+} @* ← đóng else p == null *@
 
 @section Scripts {
     <script>
-        const images = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Images ?? new List<string>()));
+        const images      = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Images ?? new List<string>()));
         const productId   = @p.Id;
         const productName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Name ?? ""));
         const productImg  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(p?.Images?.FirstOrDefault() ?? ""));
         const hasSizes    = @Html.Raw(p.SizePrices.Any() ? "true" : "false");
-                // ✅ MỚI — InvariantCulture render "1850000" → JS đọc đúng
-        const basePrice = @(p.IsContactPrice || p.IsOutOfStock ? "0" : p.Price.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        const basePrice   = @(p.IsContactPrice || p.IsOutOfStock ? "0" : p.Price.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        const currentSlug = '@(RouteData.Values["slug"]?.ToString() ?? "")';
 
         let currentIdx    = 0;
         let selectedLabel = null;
@@ -688,7 +1052,6 @@ else
                     showToast('warning', 'Chưa chọn size', 'Vui lòng chọn size trước khi thêm vào giỏ.');
                     return;
                 }
-                // ID duy nhất cho mỗi size = productId_label
                 const cartKey  = `${productId}_${selectedLabel}`;
                 const itemName = `${productName} (${selectedLabel})`;
 
@@ -704,7 +1067,6 @@ else
                 }
                 cart[cartKey].qty += qty;
             } else {
-                // Sản phẩm không có size
                 if (!cart[productId]) {
                     cart[productId] = {
                         id:    productId,
@@ -734,6 +1096,133 @@ else
             addToCartDetail();
             setTimeout(() => window.location.href = '/Checkout', 500);
         }
-    
+
+        // ── REVIEWS ──────────────────────────────────────────────────────────
+
+        function renderStars(score) {
+            return '★'.repeat(score) + '☆'.repeat(5 - score);
+        }
+
+        function getInitials(name) {
+            if (!name) return '?';
+            return name.trim().split(' ')
+                .filter(w => w.length > 0)
+                .map(w => w[0]).join('').substring(0, 2).toUpperCase();
+        }
+
+        function appendReviewCards(items) {
+            const list  = document.getElementById('reviews-list');
+            const empty = document.getElementById('empty-msg');
+            if (empty) empty.remove();
+
+            items.forEach(r => {
+                const div = document.createElement('div');
+                div.className = 'review-card';
+                div.innerHTML = `
+                    <div class="review-header">
+                        <div class="review-avatar">${getInitials(r.userName)}</div>
+                        <div class="review-meta">
+                            <div class="reviewer-name">${r.userName ?? 'Khách hàng'}</div>
+                        </div>
+                        <div class="review-stars">${renderStars(r.score ?? 0)}</div>
+                    </div>
+                    <p class="review-comment">${(r.comment ?? '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function loadMoreReviews() {
+            const btn = document.getElementById('btn-load-more');
+            if (!btn) return;
+
+            const page  = parseInt(btn.dataset.page);
+            const total = parseInt(btn.dataset.total);
+
+            btn.disabled    = true;
+            btn.textContent = 'Đang tải...';
+
+            try {
+                const res  = await fetch(`?handler=Reviews&slug=${encodeURIComponent(currentSlug)}&page=${page}`);
+                const data = await res.json();
+
+                if (data.items?.length) appendReviewCards(data.items);
+
+                const nextPage = page + 1;
+                if (nextPage > total) {
+                    btn.parentElement.remove();
+                } else {
+                    btn.dataset.page    = nextPage;
+                    btn.disabled        = false;
+                    btn.textContent     = 'Xem thêm đánh giá';
+                }
+            } catch {
+                btn.disabled    = false;
+                btn.textContent = 'Xem thêm đánh giá';
+                showToast('warning', 'Lỗi', 'Không thể tải thêm đánh giá.');
+            }
+        }
+
+        async function submitReview() {
+            const comment = document.getElementById('rv-comment').value.trim();
+            const scoreEl = document.querySelector('input[name="rv-score"]:checked');
+            const btn     = document.getElementById('btn-submit-rv');
+
+            if (!scoreEl) {
+                showToast('warning', 'Thiếu đánh giá', 'Vui lòng chọn số sao.'); return;
+            }
+            if (!comment) {
+                showToast('warning', 'Thiếu nhận xét', 'Vui lòng viết nhận xét.'); return;
+            }
+
+            btn.disabled    = true;
+            btn.textContent = 'Đang gửi...';
+
+            try {
+                const res = await fetch('?handler=Review', {
+                    method:  'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken':
+                            document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        score:     parseInt(scoreEl.value),
+                        comment:   comment
+                    })
+                });
+
+                // Chưa đăng nhập → server trả 401
+                if (res.status === 401) {
+                    showToast('warning', 'Chưa đăng nhập', 'Vui lòng đăng nhập để gửi đánh giá.');
+                    setTimeout(() => window.location.href = '/Login?returnUrl=' + encodeURIComponent(window.location.pathname), 1200);
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('success', 'Cảm ơn bạn!', 'Đánh giá đã được ghi nhận.');
+                    setTimeout(() => window.location.reload(), 1200);
+                    // appendReviewCards([{
+                    //     userName: data.userName,
+                    //     score:    parseInt(scoreEl.value),
+                    //     comment:  comment
+                    // }]);
+                    // document.getElementById('rv-comment').value = '';
+                    // document.querySelectorAll('input[name="rv-score"]').forEach(r => r.checked = false);
+                    // const countEl = document.getElementById('review-count');
+                    // if (countEl) countEl.textContent = parseInt(countEl.textContent || '0') + 1;
+                } else {
+                    showToast('warning', 'Thất bại', data.message ?? 'Gửi đánh giá thất bại.');
+                }
+            } catch {
+                showToast('warning', 'Lỗi kết nối', 'Không thể gửi đánh giá, thử lại.');
+            } finally {
+                btn.disabled    = false;
+                btn.textContent = 'Gửi đánh giá';
+            }
+        }
     </script>
 }

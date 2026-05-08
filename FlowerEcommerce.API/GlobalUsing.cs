@@ -14,3 +14,4 @@ global using FlowerEcommerce.Domain.Exceptions;
 global using FluentValidation;
 global using Asp.Versioning;
 global using System.Text;
+global using Microsoft.AspNetCore.Authorization;

@@ -2,7 +2,6 @@
 using FlowerEcommerce.Application.Handlers.Categories.Commands.DeleteCategory;
 using FlowerEcommerce.Application.Handlers.Categories.Commands.UpdateCategory;
 using FlowerEcommerce.Application.Handlers.Categories.Queries.GetCategories;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FlowerEcommerce.API.Controllers.V1;
 

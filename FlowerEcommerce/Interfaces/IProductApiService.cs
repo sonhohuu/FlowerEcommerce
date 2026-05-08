@@ -12,4 +12,6 @@ public interface IProductApiService
         string? sort = null);
 
     Task<ProductDetailViewModel?> GetProductDetailBySlugAsync(string slug);
+    Task<ReviewPaginatedResult> GetProductRatingsAsync(ulong productId, int page = 1, int pageSize = 10);
+    Task<(bool Success, string? Message, int StatusCode)> CreateRatingAsync(CreateReviewRequest request);
 }

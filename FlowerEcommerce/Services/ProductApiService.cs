@@ -7,15 +7,17 @@ namespace FlowerEcommerce.View.Services;
 public class ProductApiService : IProductApiService
 {
     private readonly HttpClient _httpClient;
+    private readonly IHttpContextAccessor _contextAccessor;
     private readonly IMemoryCache _cache;
 
     // Key prefix để tránh collision với cache khác
     private const string SlugCachePrefix = "slug2id_";
     private static readonly TimeSpan SlugCacheTtl = TimeSpan.FromMinutes(30);
 
-    public ProductApiService(HttpClient httpClient, IMemoryCache cache)
+    public ProductApiService(HttpClient httpClient, IHttpContextAccessor contextAccessor, IMemoryCache cache)
     {
         _httpClient = httpClient;
+        _contextAccessor = contextAccessor;
         _cache = cache;
     }
 
@@ -118,6 +120,60 @@ public class ProductApiService : IProductApiService
             return MapToDetailViewModel(response.Data);
         }
         catch { return null; }
+    }
+
+    public async Task<ReviewPaginatedResult> GetProductRatingsAsync(ulong productId, int page = 1, int pageSize = 10)
+    {
+        try
+        {
+            var response = await _httpClient
+                .GetFromJsonAsync<ApiResponse<PaginatedData<ReviewViewModel>>>(
+                    $"api/productrating?ProductId={productId}&page={page}&pageSize={pageSize}");
+
+            if (response?.Success != true || response.Data is null)
+                return new ReviewPaginatedResult();
+
+            return new ReviewPaginatedResult
+            {
+                Items = response.Data.Items.Select(r => new ReviewViewModel
+                {
+                    Id = r.Id,
+                    Score = r.Score,
+                    Comment = r.Comment,
+                    UserName = r.UserName ?? "Khách hàng"
+                }).ToList(),
+                TotalPages = response.Data.TotalPages,
+                CurrentPage = response.Data.Page,
+                TotalCount = response.Data.Items.Count   // tuỳ cấu trúc PaginatedData
+            };
+        }
+        catch { return new ReviewPaginatedResult(); }
+    }
+
+    public async Task<(bool Success, string? Message, int StatusCode)> CreateRatingAsync(CreateReviewRequest request)
+    {
+        try
+        {
+            // Lấy access_token từ cookie của request hiện tại
+            var token = _contextAccessor.HttpContext?.Request.Cookies["access_token"];
+
+            if (!string.IsNullOrEmpty(token))
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var res = await _httpClient.PostAsJsonAsync("api/productrating", request);
+
+            return ((int)res.StatusCode) switch
+            {
+                200 or 201 => (true, null, 200),
+                401 => (false, "UNAUTHORIZED", 401),
+                _ => (false, await res.Content.ReadAsStringAsync(), (int)res.StatusCode)
+            };
+        }
+        catch (Exception ex)
+        {
+            return (false, ex.Message, 500);
+        }
     }
 
     // ── CACHE HELPER ─────────────────────────────────────────────────────

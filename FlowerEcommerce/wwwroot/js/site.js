@@ -110,26 +110,7 @@ function checkout() {
     }
 
     window.location.href = "/Checkout";
-
-    //showToast('🎉 Đặt hàng thành công! Cảm ơn bạn.');
-    //cart = {};
-    //saveCart();
-    //refreshCart();
-    //toggleCart();
 }
-
-/* ── SEARCH BAR ─────────────────────────────────────────── */
-//function toggleSearch() {
-//    const sb = document.getElementById('search-bar');
-//    if (!sb) return;
-//    sb.classList.toggle('open');
-//    if (sb.classList.contains('open')) {
-//        setTimeout(() => {
-//            const input = document.getElementById('search-input');
-//            if (input) input.focus();
-//        }, 200);
-//    }
-//}
 
 function toggleSearch() {
     const sb = document.getElementById('search-bar');
@@ -170,31 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-/* ── TOAST ──────────────────────────────────────────────── */
-//let toastTimer;
-//function showToast(msg) {
-//    const t = document.getElementById('toast');
-//    if (!t) return;
-//    t.textContent = msg;
-//    t.classList.add('show');
-//    clearTimeout(toastTimer);
-//    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
-//}
-
-/* ── INIT (chạy khi DOM sẵn sàng) ──────────────────────── */
-//document.addEventListener('DOMContentLoaded', () => {
-//    refreshCart();
-
-//    // Active nav link theo URL hiện tại
-//    const currentPath = window.location.pathname.toLowerCase();
-//    document.querySelectorAll('.nav-links a').forEach(link => {
-//        const href = link.getAttribute('href')?.toLowerCase();
-//        if (href && (currentPath === href || currentPath.startsWith(href + '/'))) {
-//            link.classList.add('active');
-//        }
-//    });
-//});
 
 // ════════════════════════════════
 // TOAST SYSTEM
@@ -264,4 +220,5 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.classList.add('hide');
         toast.addEventListener('animationend', () => toast.remove(), { once: true });
     }
+
 })();

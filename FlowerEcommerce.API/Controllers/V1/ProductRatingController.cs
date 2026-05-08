@@ -1,18 +1,19 @@
-﻿using FlowerEcommerce.Application.Handlers.Orders.Commands.CreateOrder;
-using FlowerEcommerce.Application.Handlers.Orders.Commands.UpdateOrder;
-using FlowerEcommerce.Application.Handlers.Orders.Queries.GetOrders;
+﻿using FlowerEcommerce.Application.Handlers.ProductRatings.Commands.DeleteProductRating;
+using FlowerEcommerce.Application.Handlers.ProductRatings.Commands.UpsertProductRating;
+using FlowerEcommerce.Application.Handlers.ProductRatings.Queries.GetProductRatings;
+
 
 namespace FlowerEcommerce.API.Controllers.V1;
 
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
-public class OrderController : BaseController
+public class ProductRatingController : BaseController
 {
-    [Authorize(Policy = AppPolicy.AdminOrCustomer)]
+    [Authorize(Policy = AppPolicy.CustomerOnly)]
     [HttpPost]
-    public async Task<IActionResult> CreateOrder(
-        [FromBody] CreateOrderCommand command,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> UpsertProductRating    (
+    [FromBody] UpsertProductRatingCommand command,
+    CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
         return result.IsSuccess
@@ -21,22 +22,21 @@ public class OrderController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOrCustomer)]
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateOrder(
-        [FromBody] UpdateOrderCommand command,
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProductRating(
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
     {
-        command.Id = id;
+        var command = new DeleteProductRatingCommand { Id = id };
         var result = await Mediator.Send(command, cancellationToken);
         return result.IsSuccess
             ? Ok(ApiResponse<object>.Ok(null))
             : HandleResult(result);
     }
 
-    [Authorize(Policy = AppPolicy.AdminOrCustomer)]
     [HttpGet]
-    public async Task<IActionResult> GetOrders([FromQuery] GetOrdersQuery query,
+    public async Task<IActionResult> GetProductRatings(
+        [FromQuery] GetProductRatingsQuery query,
         CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(query, cancellationToken);

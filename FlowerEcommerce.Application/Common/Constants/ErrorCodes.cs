@@ -31,6 +31,13 @@ public static class MessageKey
     public const string ProductPriceValid = "Giá sản phẩm phải lớn hơn hoặc bằng 0";
     #endregion
 
+    #region ProductRatings
+    public const string ProductRatingScoreValid = "Điểm đánh giá phải nằm trong khoảng từ 1 đến 5.";
+    public const string ProductRatingCommentValidLength = "Nội dung đánh giá không được vượt quá 1000 ký tự.";
+    public const string ProductRatingAlreadyExists = "Bạn đã đánh giá sản phẩm này rồi.";
+    public const string ProductRatingNotFound = "Đánh giá sản phẩm không tồn tại.";
+    #endregion
+
     #region Categories
     public const string CategoryNotFound = "Danh mục không tồn tại.";
     public const string CategoryAlreadyExists = "Tên danh mục này đã tồn tại.";
