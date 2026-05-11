@@ -1,4 +1,6 @@
-﻿using FlowerEcommerce.Application.Handlers.Orders.Commands.CreateOrder;
+﻿using FlowerEcommerce.Application.Handlers.Categories.Commands.DeleteCategory;
+using FlowerEcommerce.Application.Handlers.Orders.Commands.CreateOrder;
+using FlowerEcommerce.Application.Handlers.Orders.Commands.DeleteOrder;
 using FlowerEcommerce.Application.Handlers.Orders.Commands.UpdateOrder;
 using FlowerEcommerce.Application.Handlers.Orders.Queries.GetOrders;
 
@@ -20,7 +22,7 @@ public class OrderController : BaseController
             : HandleResult(result);
     }
 
-    [Authorize(Policy = AppPolicy.AdminOrCustomer)]
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateOrder(
         [FromBody] UpdateOrderCommand command,
@@ -28,6 +30,19 @@ public class OrderController : BaseController
         CancellationToken cancellationToken)
     {
         command.Id = id;
+        var result = await Mediator.Send(command, cancellationToken);
+        return result.IsSuccess
+            ? Ok(ApiResponse<object>.Ok(null))
+            : HandleResult(result);
+    }
+
+    [Authorize(Policy = AppPolicy.CustomerOnly)]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteOrder(
+        [FromRoute] ulong id,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteOrderCommand { Id = id };
         var result = await Mediator.Send(command, cancellationToken);
         return result.IsSuccess
             ? Ok(ApiResponse<object>.Ok(null))

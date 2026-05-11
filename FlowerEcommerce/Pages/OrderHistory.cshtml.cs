@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FlowerEcommerce.View.Pages;
 
+[IgnoreAntiforgeryToken]
 public class OrderHistoryModel : PageModel
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -22,8 +23,8 @@ public class OrderHistoryModel : PageModel
 
     // Proxy: GET /OrderHistory?handler=Orders&page=1&size=10&isSelf=true&status=...&searchKeyword=...
     public async Task<IActionResult> OnGetOrdersAsync(
-        int page = 1,
-        int size = 10,
+        int pageNumber = 1,
+        int pageSize = 10,
         bool isSelf = true,
         string? status = null,
         string? searchKeyword = null)
@@ -32,9 +33,9 @@ public class OrderHistoryModel : PageModel
 
         var query = new Dictionary<string, string?>
         {
-            ["page"] = page.ToString(),
-            ["size"] = size.ToString(),
-            ["isSelf"] = isSelf.ToString().ToLower(),
+            ["Page"] = pageNumber.ToString(),
+            ["PageSize"] = pageSize.ToString(),
+            ["IsSelf"] = isSelf.ToString().ToLower(),
         };
 
         if (!string.IsNullOrEmpty(status))
@@ -51,5 +52,42 @@ public class OrderHistoryModel : PageModel
         var content = await response.Content.ReadAsStringAsync();
 
         return Content(content, "application/json");
+    }
+
+    public async Task<IActionResult> OnPostCancelAsync([FromBody] CancelOrderRequest body)
+    {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("userId")))
+            return new JsonResult(new { success = false, message = "Chưa đăng nhập." }) { StatusCode = 401 };
+
+        if (string.IsNullOrWhiteSpace(body?.OrderId))
+            return new JsonResult(new { success = false, message = "Thiếu mã đơn hàng." }) { StatusCode = 400 };
+
+        var client = _httpClientFactory.CreateClient("Api");
+
+        var response = await client.DeleteAsync($"api/order/{body.OrderId}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        // LOG để kiểm tra
+        Console.WriteLine($"[CancelOrder] id={body.OrderId} | status={response.StatusCode} | body={content}");
+
+        if (response.IsSuccessStatusCode)
+            return new JsonResult(new { success = true });
+
+        string errorMessage = content;
+        try
+        {
+            var json = System.Text.Json.JsonDocument.Parse(content);
+            if (json.RootElement.TryGetProperty("message", out var msg))
+                errorMessage = msg.GetString() ?? content;
+        }
+        catch { }
+
+        return new JsonResult(new { success = false, message = errorMessage })
+        { StatusCode = (int)response.StatusCode };
+    }
+
+    public class CancelOrderRequest
+    {
+        public string? OrderId { get; set; }
     }
 }

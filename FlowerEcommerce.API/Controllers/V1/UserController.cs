@@ -1,4 +1,6 @@
-﻿using FlowerEcommerce.Application.Handlers.Users.Queries;
+﻿using FlowerEcommerce.Application.Handlers.Categories.Commands.UpdateCategory;
+using FlowerEcommerce.Application.Handlers.Users.Commands;
+using FlowerEcommerce.Application.Handlers.Users.Queries;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FlowerEcommerce.API.Controllers.V1;
@@ -17,4 +19,17 @@ public class UserController : BaseController
             ? Ok(ApiResponse<object>.Ok(result.Data))
             : HandleResult(result);
     }
+
+    [Authorize(Policy = AppPolicy.AdminOnly)]
+    [HttpPut()]
+    public async Task<IActionResult> UpdateUserStatus(
+        [FromBody] UpdateUserStatusCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(command, cancellationToken);
+        return result.IsSuccess
+            ? Ok(ApiResponse<object>.Ok(null))
+            : HandleResult(result);
+    }
+    
 }

@@ -23,6 +23,10 @@ public static class MessageKey
     public const string Forbidden = "Bạn không có quyền truy cập.";
     #endregion
 
+    #region Users
+    public const string UserNotFound = "Người dùng không tồn tại.";
+    #endregion
+
     #region Products
     public const string ProductNotFound = "Sản phẩm không tồn tại.";
     public const string ProductAlreadyExists = "Tên sản phẩm này đã tồn tại.";
@@ -54,6 +58,8 @@ public static class MessageKey
     public const string OrderItemNotFound = "Một hoặc nhiều sản phẩm trong đơn hàng không tồn tại.";
     public const string OrderCannotBeUpdated = "Không thể cập nhật đơn hàng đã hoàn thành hoặc thất bại.";
     public const string InvalidStatusTransition = "Chuyển đổi trạng thái không hợp lệ.";
+    public const string OrderCannotBeDeleted = "Không thể xóa đơn hàng đã hoàn thành hoặc thất bại.";
+    public const string OrderCannotBeCancelled = "Không thể hủy đơn khi trạng thái không phải xác nhận.";
     #endregion
 
     #region Files
