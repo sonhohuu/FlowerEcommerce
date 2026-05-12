@@ -5,7 +5,7 @@ namespace FlowerEcommerce.Application.Handlers.Orders.Commands.UpdateOrder
     public record UpdateOrderCommand : IRequest<TResult>
     {
         [SwaggerIgnore]
-        public ulong  Id { get; set; }
+        public ulong Id { get; set; }
         public string? CustomerName { get; init; }
         public string? Address { get; init; }
         public string? PhoneNumber { get; init; }

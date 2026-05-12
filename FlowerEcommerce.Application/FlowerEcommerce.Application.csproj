@@ -12,6 +12,7 @@
     <PackageReference Include="Mapster.DependencyInjection" Version="10.0.7" />
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
+    <PackageReference Include="payOS" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.1.7" />
   </ItemGroup>
 

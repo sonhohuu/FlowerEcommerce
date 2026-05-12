@@ -1,5 +1,6 @@
 using FlowerEcommerce.View.Interfaces;
 using FlowerEcommerce.View.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FlowerEcommerce.View.Pages.Products;
@@ -50,5 +51,42 @@ public class IndexModel : PageModel
         Products = items;
         TotalPages = totalPages;
         CurrentPage = currentPage;
+    }
+
+    public async Task<IActionResult> OnGetProductsAsync(
+        int pageNumber = 1,
+        int pageSize = 9,
+        string? category = null,
+        string? search = null,
+        string? sort = null)
+    {
+        var categoryList = await _categoryService.GetCategoriesAsync();
+
+        ulong? categoryId = null;
+        if (!string.IsNullOrEmpty(category))
+        {
+            var matched = categoryList.FirstOrDefault(
+                c => string.Equals(c.Slug, category, StringComparison.OrdinalIgnoreCase));
+            categoryId = matched?.Id;
+        }
+
+        var (items, totalPages, currentPage) = await _productService.GetProductsAsync(
+            page: pageNumber,
+            categoryId: categoryId,
+            search: search,
+            sort: sort,
+            pageSize: pageSize);
+
+        return new JsonResult(new
+        {
+            success = true,
+            data = new
+            {
+                items,
+                total = totalPages * pageSize,
+                page = currentPage,
+                totalPages
+            }
+        });
     }
 }

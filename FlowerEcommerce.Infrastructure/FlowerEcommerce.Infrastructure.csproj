@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>7f0e7f38-087e-493a-828d-87dc8f0a689a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="payOS" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>

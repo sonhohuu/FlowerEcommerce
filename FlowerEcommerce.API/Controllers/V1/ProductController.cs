@@ -10,7 +10,7 @@ namespace FlowerEcommerce.API.Controllers;
 [Route("api/[controller]")]
 public class ProductController : BaseController
 {
-    //[Authorize(Policy = AppPolicy.AdminOnly)]
+    [Authorize(Policy = AppPolicy.AdminOnly)]
     [HttpPost]
     public async Task<IActionResult> CreateProduct(
         [FromForm] CreateProductCommand command,

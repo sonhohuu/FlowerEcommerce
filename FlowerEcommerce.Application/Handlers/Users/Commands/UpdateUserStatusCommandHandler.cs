@@ -22,6 +22,12 @@ public class UpdateUserStatusCommandHandler : IRequestHandler<UpdateUserStatusCo
             {
                 return TResult.Failure(MessageKey.UserNotFound);
             }
+
+            if (user.Role == AppRoleEnum.Administrator)
+            {
+                return TResult.Failure(MessageKey.CannotUpdateAdminStatus);
+            }
+
             user.Status = request.Status;
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync(cancellationToken);

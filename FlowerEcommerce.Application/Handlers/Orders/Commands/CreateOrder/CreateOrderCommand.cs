@@ -1,6 +1,6 @@
 ﻿namespace FlowerEcommerce.Application.Handlers.Orders.Commands.CreateOrder;
 
-public record CreateOrderCommand : IRequest<TResult>
+public record CreateOrderCommand : IRequest<TResult<CreateOrderResult>>
 {
     public string CustomerName { get; init; } = null!;
     public string PhoneNumber { get; init; } = null!;
@@ -18,3 +18,10 @@ public record OrderItemDto
     public decimal Price { get; init; }
 
 }
+
+public record CreateOrderResult(
+    ulong OrderId,
+    string OrderCode,
+    string? CheckoutUrl,  // null nếu COD
+    string? QrCode        // null nếu COD
+);

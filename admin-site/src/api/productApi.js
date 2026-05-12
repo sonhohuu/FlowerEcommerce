@@ -1,7 +1,5 @@
 import { api } from "./index";
 
-const BASE = "https://localhost:7150";
-
 const buildFormData = (data) => {
   const fd = new FormData();
 
@@ -51,26 +49,9 @@ export const productApi = {
 
   getById: (id) => api.get(`/api/product/${id}`),
 
-  create: async (data) => {
-    const res = await fetch("/api/product", {
-      method: "POST",
-      body: buildFormData(data),
-      // KHÔNG set Content-Type — browser tự thêm boundary
-    });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.message || "Tạo thất bại");
-    return json.data;
-  },
+  create: (data) => api.upload("/api/product", buildFormData(data), "POST"),
 
-  update: async (id, data) => {
-    const res = await fetch(`${BASE}/api/product/${id}`, {
-      method: "PUT",
-      body: buildFormData(data),
-    });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.message || "Cập nhật thất bại");
-    return json.data;
-  },
+  update: (id, data) => api.upload(`/api/product/${id}`, buildFormData(data), "PUT"),
 
   delete: (id) => api.delete(`/api/product/${id}`),
 };

@@ -2,6 +2,7 @@
 
 public class UpdateUserStatusCommand : IRequest<TResult>
 {
-    public required ulong UserId { get; set; }
+    [SwaggerIgnore]
+    public ulong UserId { get; set; }
     public UserStatusEnum Status { get; set; }
 }

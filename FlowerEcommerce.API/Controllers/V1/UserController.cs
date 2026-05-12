@@ -21,11 +21,13 @@ public class UserController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPut()]
+    [HttpPut("{id}/status")]
     public async Task<IActionResult> UpdateUserStatus(
         [FromBody] UpdateUserStatusCommand command,
+        [FromRoute] ulong id,
         CancellationToken cancellationToken)
     {
+        command.UserId = id;
         var result = await Mediator.Send(command, cancellationToken);
         return result.IsSuccess
             ? Ok(ApiResponse<object>.Ok(null))

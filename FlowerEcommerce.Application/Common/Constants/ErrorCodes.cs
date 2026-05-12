@@ -25,6 +25,7 @@ public static class MessageKey
 
     #region Users
     public const string UserNotFound = "Người dùng không tồn tại.";
+    public const string CannotUpdateAdminStatus = "Không thể thay đổi trạng thái của quản trị viên.";
     #endregion
 
     #region Products

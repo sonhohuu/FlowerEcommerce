@@ -294,6 +294,63 @@
                     color: #fff;
                     border-color: #111;
                 }
+
+        /* ── Skeleton ── */
+        .skeleton-card {
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .skeleton-img {
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+        }
+
+        .skeleton-body {
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .skeleton-line {
+            height: 13px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+        }
+
+            .skeleton-line.w80 {
+                width: 80%;
+            }
+
+            .skeleton-line.w50 {
+                width: 50%;
+            }
+
+            .skeleton-line.w100 {
+                width: 100%;
+            }
+
+            .skeleton-line.btn-line {
+                height: 34px;
+                margin-top: 4px;
+            }
+
+        @@keyframes shimmer {
+            from {
+                background-position: 200% 0;
+            }
+
+            to {
+                background-position: -200% 0;
+            }
+        }
     </style>
 }
 
@@ -336,7 +393,7 @@
     </aside>
 
     <!-- Products -->
-    <section class="product-section">
+    @* <section class="product-section">
         <div class="product-section-header">
             <h2>@currentCategoryName</h2>
 
@@ -417,28 +474,188 @@
                 }
             </div>
         }
+    </section> *@
+
+    <section class="product-section">
+        <div class="product-section-header">
+            <h2>@currentCategoryName</h2>
+            <select class="sort-select" onchange="sortProducts(this.value)">
+                <option value="default" selected="@(currentSort == "" || currentSort == "default")">Mặc định</option>
+                <option value="price-asc" selected="@(currentSort == "price-asc")">Giá tăng dần</option>
+                <option value="price-desc" selected="@(currentSort == "price-desc")">Giá giảm dần</option>
+                <option value="newest" selected="@(currentSort == "newest")">Mới nhất</option>
+            </select>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div class="product-grid" id="skeleton-grid" style="display:none">
+            @for (int i = 0; i < 9; i++)
+            {
+                <div class="skeleton-card">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line w80"></div>
+                        <div class="skeleton-line w50"></div>
+                        <div class="skeleton-line w100 btn-line"></div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Product grid -->
+        <div class="product-grid" id="product-grid"></div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
     </section>
 </div>
 
 @section Scripts {
     <script>
+        // function sortProducts(value) {
+        //     const url = new URL(window.location.href);
+        //     url.searchParams.set('sort', value);
+        //     url.searchParams.set('page', '1');
+        //     window.location.href = url.toString();
+        // }
+
+        // document.getElementById('product-grid').addEventListener('click', function(e) {
+        //     const btn = e.target.closest('.btn-add-cart');
+        //     if (!btn || btn.disabled) return;
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        //     const id    = parseInt(btn.dataset.id);
+        //     const name  = JSON.parse(btn.dataset.name);
+        //     const price = parseFloat(btn.dataset.price);
+        //     const image = JSON.parse(btn.dataset.image);
+        //     addToCart(id, name, price, image);
+        // });
+
+        let currentPage = 1;
+        const _category = '@currentCategory';
+        const _search   = '@currentSearch';
+        const _sort     = '@currentSort';
+
+        function renderCard(p) {
+            const discountBadge = (p.discountPercent > 0)
+                ? `<span class="badge">-${p.discountPercent}%</span>` : '';
+            const stockBadge = p.isOutOfStock
+                ? `<span class="badge-outofstock">Hết hàng</span>` : '';
+            const priceHtml = p.isContactPrice
+                ? `<span class="price-contact">Liên hệ</span>`
+                : `<span class="price-new">${fmt(p.price)}</span>
+                   ${p.originalPrice ? `<span class="price-old">${fmt(p.originalPrice)}</span>` : ''}`;
+
+            return `
+                <a class="product-card-link" href="/Products/${p.slug}">
+                    <div class="product-card">
+                        <div class="product-card-img">
+                            <img src="${p.imageUrl}" alt="${p.name}" loading="lazy" />
+                            ${discountBadge}${stockBadge}
+                        </div>
+                        <div class="product-card-body">
+                            <h4>${p.name}</h4>
+                            <div class="price-row">${priceHtml}</div>
+                            <button class="btn-add-cart"
+                                ${p.isOutOfStock ? 'disabled' : ''}
+                                data-id="${p.id}"
+                                data-name='${JSON.stringify(p.name)}'
+                                data-price="${p.isContactPrice ? 0 : p.price}"
+                                data-image='${JSON.stringify(p.imageUrl ?? "")}'
+                                onclick="event.preventDefault();event.stopPropagation();">
+                                ${p.isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ'}
+                            </button>
+                        </div>
+                    </div>
+                </a>`;
+        }
+
+        async function fetchProducts(page = 1) {
+            const grid     = document.getElementById('product-grid');
+            const skeleton = document.getElementById('skeleton-grid');
+            const paging   = document.getElementById('pagination');
+
+            grid.innerHTML = '';
+            skeleton.style.display = 'grid';
+            paging.innerHTML = '';
+
+            const params = new URLSearchParams({ handler: 'Products', pageNumber: page, pageSize: 9 });
+            if (_category) params.append('category', _category);
+            if (_search)   params.append('search', _search);
+            if (_sort)     params.append('sort', _sort);
+
+            try {
+                const res  = await fetch(`/Products?${params}`);
+                const json = await res.json();
+                skeleton.style.display = 'none';
+
+                if (!json.success || !json.data.items?.length) {
+                    grid.innerHTML = '<div class="empty-state">Không tìm thấy sản phẩm nào.</div>';
+                    return;
+                }
+
+                const { items, page: curPage, totalPages } = json.data;
+
+                items.forEach((p, i) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = renderCard(p).trim();
+                    const card = wrapper.firstElementChild;
+                    card.style.cssText = `opacity:0;transform:translateY(16px);transition:opacity .3s ${i*0.05}s,transform .3s ${i*0.05}s`;
+                    grid.appendChild(card);
+                    requestAnimationFrame(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    });
+                });
+
+                currentPage = curPage;
+                renderPagination(curPage, totalPages);
+
+            } catch (e) {
+                skeleton.style.display = 'none';
+                grid.innerHTML = `<div class="empty-state">⚠️ Không thể tải sản phẩm: ${e.message}</div>`;
+            }
+        }
+
+        function renderPagination(page, totalPages) {
+            const el = document.getElementById('pagination');
+            if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+            let html = `<a href="#" onclick="goPage(${page-1});return false;" ${page<=1?'style="pointer-events:none;opacity:.4"':''}>‹</a>`;
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<a href="#" class="${i===page?'active':''}" onclick="goPage(${i});return false;">${i}</a>`;
+            }
+            html += `<a href="#" onclick="goPage(${page+1});return false;" ${page>=totalPages?'style="pointer-events:none;opacity:.4"':''}>›</a>`;
+            el.innerHTML = html;
+        }
+
+        function goPage(p) {
+            if (p < 1) return;
+            currentPage = p;
+            fetchProducts(p);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function sortProducts(value) {
             const url = new URL(window.location.href);
             url.searchParams.set('sort', value);
-            url.searchParams.set('page', '1');
             window.location.href = url.toString();
         }
 
+        // Add to cart delegation
         document.getElementById('product-grid').addEventListener('click', function(e) {
             const btn = e.target.closest('.btn-add-cart');
             if (!btn || btn.disabled) return;
             e.preventDefault();
             e.stopPropagation();
-            const id    = parseInt(btn.dataset.id);
-            const name  = JSON.parse(btn.dataset.name);
-            const price = parseFloat(btn.dataset.price);
-            const image = JSON.parse(btn.dataset.image);
-            addToCart(id, name, price, image);
+            addToCart(
+                parseInt(btn.dataset.id),
+                JSON.parse(btn.dataset.name),
+                parseFloat(btn.dataset.price),
+                JSON.parse(btn.dataset.image)
+            );
         });
+
+        document.addEventListener('DOMContentLoaded', () => fetchProducts(1));
     </script>
 }

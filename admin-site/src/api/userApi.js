@@ -1,4 +1,6 @@
 import { api } from "./index";
+
+const STATUS_USER_MAP = { Active: 0, Inactive: 1 };
  
 export const userApi = {
   getAll: (params = {}) => {
@@ -10,7 +12,7 @@ export const userApi = {
     }).toString();
     return api.get(`/api/user?${query}`);
   },
- 
-  toggleStatus: (id, status) =>
-    api.put(`/api/user/${id}/status`, { status }),
+
+  updateStatus: (id, status) =>
+    api.put(`/api/user/${id}/status`, { status: STATUS_USER_MAP[status] }),
 };

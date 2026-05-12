@@ -25,3 +25,5 @@ global using FlowerEcommerce.Infrastructure.Paginate;
 global using Mapster;
 global using FlowerEcommerce.Infrastructure.Configuration;
 global using Microsoft.Extensions.Options;
+global using System.Security.Cryptography;
+global using System.Text;
