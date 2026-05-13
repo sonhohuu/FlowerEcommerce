@@ -3,5 +3,6 @@
   <Project Path="FlowerEcommerce.Application/FlowerEcommerce.Application.csproj" />
   <Project Path="FlowerEcommerce.Domain/FlowerEcommerce.Domain.csproj" />
   <Project Path="FlowerEcommerce.Infrastructure/FlowerEcommerce.Infrastructure.csproj" />
+  <Project Path="FlowerEcommerce.Test/FlowerEcommerce.Test.csproj" Id="c0ada6f5-decc-4a29-a5ba-89a998631da5" />
   <Project Path="FlowerEcommerce/FlowerEcommerce.View.csproj" />
 </Solution>
