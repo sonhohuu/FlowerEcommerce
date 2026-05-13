@@ -10,7 +10,7 @@ namespace FlowerEcommerce.API.Controllers.V1;
 public class ProductRatingController : BaseController
 {
     [Authorize(Policy = AppPolicy.CustomerOnly)]
-    [HttpPost]
+    [HttpPost(Name = "UpsertProductRating")]
     public async Task<IActionResult> UpsertProductRating    (
     [FromBody] UpsertProductRatingCommand command,
     CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ public class ProductRatingController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOrCustomer)]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}", Name = "DeleteProductRating")]
     public async Task<IActionResult> DeleteProductRating(
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
@@ -34,7 +34,7 @@ public class ProductRatingController : BaseController
             : HandleResult(result);
     }
 
-    [HttpGet]
+    [HttpGet(Name = "GetProductRatings")]
     public async Task<IActionResult> GetProductRatings(
         [FromQuery] GetProductRatingsQuery query,
         CancellationToken cancellationToken)

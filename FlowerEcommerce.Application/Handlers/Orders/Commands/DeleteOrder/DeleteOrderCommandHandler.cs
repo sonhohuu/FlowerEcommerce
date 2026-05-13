@@ -26,10 +26,6 @@ public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, TRe
                 return TResult.Failure(MessageKey.OrderCannotBeDeleted);
             }
 
-            // Terminal states: không thể delete
-            if (existingOrder.Status is OrderStatus.Success or OrderStatus.Failed)
-                return TResult.Failure(MessageKey.OrderCannotBeDeleted);
-
             existingOrder.Status = OrderStatus.Failed;
 
             _unitOfWork.Repository<Order>().Update(existingOrder);

@@ -67,6 +67,24 @@ public static class DependencyInjection
             {
                 [new OpenApiSecuritySchemeReference(bearerScheme, document)] = []
             });
+
+            options.MapType<OrderStatus>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.Integer,
+                Format = "int32"
+            });
+
+            options.MapType<PaymentMethod>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.Integer,
+                Format = "int32"
+            });
+
+            options.MapType<UserStatusEnum>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.Integer,
+                Format = "int32"
+            });
         });
 
         return services;

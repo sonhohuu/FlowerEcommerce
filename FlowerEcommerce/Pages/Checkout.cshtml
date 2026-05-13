@@ -712,7 +712,7 @@
     </div>
 </div>
 
-<!-- SUCCESS OVERLAY -->
+@* <!-- SUCCESS OVERLAY -->
 <div class="success-overlay" id="success-overlay">
     <div class="success-box">
         <div class="success-icon">🎉</div>
@@ -724,10 +724,40 @@
             <a href="/Products" class="back-btn" onclick="clearCartAfterOrder()">Tiếp tục mua sắm</a>
         </div>
     </div>
+</div> *@
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+    <div class="success-box">
+        <div class="success-icon">🎉</div>
+        <div class="success-order-code" id="success-order-code"></div>
+        <h2>Đặt hàng thành công!</h2>
+        <p id="success-msg">Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.</p>
+
+        <!-- BANK TRANSFER: QR + link (ẩn mặc định) -->
+        <div id="bank-payment-detail" style="display:none; margin-bottom:20px;">
+            <div id="qr-wrapper" style="margin:0 auto 14px; width:fit-content; padding:10px; border:1.5px solid #e55a00; border-radius:8px; background:#fff;">
+                <div id="qr-canvas"></div>
+            </div>
+            <a id="checkout-url-btn" href="#" target="_blank"
+               style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;
+                background:#e55a00;color:#fff;border-radius:6px;
+                font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;
+                text-transform:uppercase;text-decoration:none;transition:background 0.2s;">
+                🔗 Thanh toán qua PayOS
+            </a>
+        </div>
+
+        <div class="success-actions">
+            <a href="/OrderHistory" class="history-btn" onclick="clearCartAfterOrder()">Xem đơn hàng</a>
+            <a href="/Products" class="back-btn" onclick="clearCartAfterOrder()">Tiếp tục mua sắm</a>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script >
         // ── Load cart ──
         function loadCheckoutCart() {
             const cart  = JSON.parse(localStorage.getItem('cart') || '{}');
@@ -834,18 +864,49 @@
 
                 const data = await res.json();
 
-                if (res.ok && data.success) {
-                    const orderCode = data.data?.orderCode ?? '';
-                    document.getElementById('success-order-code').textContent =
-                        orderCode ? '#' + orderCode : '';
+        if (res.ok && data.success) {
+            const orderCode = data.data?.orderCode ?? '';
+            const checkoutUrl = data.data?.checkoutUrl ?? null;
+            const qrCodeString = data.data?.qrCode ?? null;
 
-                    const payVal = parseInt(document.querySelector('input[name="payment"]:checked').value);
-                    document.getElementById('success-msg').innerHTML = payVal === 1
-                        ? 'Vui lòng chuyển khoản theo thông tin đã cung cấp.<br>Đơn hàng sẽ được xử lý sau khi xác nhận.'
-                        : 'Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.';
+            document.getElementById('success-order-code').textContent =
+            orderCode ? '#' + orderCode : '';
 
-                    document.getElementById('success-overlay').classList.add('show');
-                } else {
+            const payVal = parseInt(document.querySelector('input[name="payment"]:checked').value);
+
+            if (payVal === 1 && checkoutUrl) {
+                document.getElementById('bank-payment-detail').style.display = 'block';
+                document.getElementById('checkout-url-btn').href = checkoutUrl;
+
+            const qrContainer = document.getElementById('qr-canvas');
+                qrContainer.innerHTML = '';
+                if (qrCodeString) {
+                    new QRCode(qrContainer, {
+                        text: qrCodeString,
+                        width: 180,
+                        height: 180,
+                        colorDark: '#111111',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                }
+
+            document.getElementById('success-msg').innerHTML =
+                'Quét mã QR hoặc nhấn nút bên dưới để thanh toán.<br>Đơn hàng xử lý sau khi xác nhận chuyển khoản.';
+
+            setTimeout(() => {
+                document.getElementById('success-overlay').classList.add('show');
+            }, 200);
+            return;
+
+            } else {
+                document.getElementById('bank-payment-detail').style.display = 'none';
+                document.getElementById('success-msg').innerHTML =
+                'Cảm ơn bạn đã mua hàng.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.';
+            }
+
+            document.getElementById('success-overlay').classList.add('show');
+            } else {
                     const errMsg = data.message
                         || (data.validationErrors
                             ? Object.values(data.validationErrors).flat().join(' · ')

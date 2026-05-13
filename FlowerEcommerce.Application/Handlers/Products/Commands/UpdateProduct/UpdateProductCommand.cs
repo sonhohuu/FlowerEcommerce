@@ -6,7 +6,7 @@ public record UpdateProductCommand : IRequest<TResult>
 {
     [SwaggerIgnore]
     public required ulong Id { get; set; }
-    public string? Name { get; init; }
+    public string? Name { get; set; }
     public string? Description { get; init; }
     public decimal? Price { get; init; }
     public decimal? OriginalPrice { get; init; }

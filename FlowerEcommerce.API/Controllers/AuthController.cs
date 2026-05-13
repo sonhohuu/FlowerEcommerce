@@ -5,7 +5,7 @@ namespace FlowerEcommerce.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : BaseController
 {
-    [HttpPost("login")]
+    [HttpPost("login", Name = "AuthLogin")]
     [ProducesResponseType(typeof(TResult<LoginResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login(LoginCommand command, CancellationToken cancellationToken)
     {
@@ -17,7 +17,7 @@ public class AuthController : BaseController
             : HandleResult(result);
     }
 
-    [HttpPost("refresh-token")]
+    [HttpPost("refresh-token", Name = "AuthRefreshToken")]
     [ProducesResponseType(typeof(TResult<JwtResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> RefreshToken(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class AuthController : BaseController
             : HandleResult(result);
     }
 
-    [HttpPost("register")]
+    [HttpPost("register", Name = "AuthRegister")]
     [ProducesResponseType(typeof(TResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)
     {

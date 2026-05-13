@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://localhost:7150',
+        target: 'https://flowerecommerceapi20260512222055-a2hcb9cqcackeac4.southeastasia-01.azurewebsites.net',
         changeOrigin: true,
         secure: false,
       }

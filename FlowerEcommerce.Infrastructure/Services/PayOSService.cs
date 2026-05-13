@@ -28,7 +28,7 @@ public class PayOSService : IPayOSService
         {
             OrderCode = req.OrderCode,
             Amount = req.Amount,
-            Description = req.Description,
+            Description = "Thanh toán hóa đơn",
             ReturnUrl = req.ReturnUrl ?? _options.ReturnUrl,   // fallback về config nếu caller không truyền
             CancelUrl = req.CancelUrl ?? _options.CancelUrl,
             BuyerName = req.BuyerName,

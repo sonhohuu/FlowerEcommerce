@@ -9,7 +9,7 @@ public static class AppConstants
     public const int MaxPageSize = 100;
     public const int MaxCommonLength = 64;
 
-    public const string DbCsKey = "DefaultConnection";
+    public const string DbCsKey = "AzureDatabase";
     public const string DateFormat = "yyyy-MM-dd";
     public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ssZ";
     public const string DateHumanFormat = "dd-MM-yyyy";

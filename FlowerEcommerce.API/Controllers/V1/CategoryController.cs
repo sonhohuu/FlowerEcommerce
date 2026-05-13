@@ -10,7 +10,7 @@ namespace FlowerEcommerce.API.Controllers.V1;
 public class CategoryController : BaseController
 {
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPost]
+    [HttpPost(Name = "CreateCategory")]
     public async Task<IActionResult> CreateCategory(
     [FromBody] CreateCategoryCommand command,
     CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ public class CategoryController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPut("{id}")]
+    [HttpPut("{id}", Name = "UpdateCategory")]
     public async Task<IActionResult> UpdateCategory(
         [FromBody] UpdateCategoryCommand command,
         [FromRoute] ulong id,
@@ -36,7 +36,7 @@ public class CategoryController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}", Name = "DeleteCategory")]
     public async Task<IActionResult> DeleteCategory(
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
@@ -48,7 +48,7 @@ public class CategoryController : BaseController
             : HandleResult(result);
     }
 
-    [HttpGet]
+    [HttpGet(Name = "GetCategories")]
     public async Task<IActionResult> GetCategories(
         CancellationToken cancellationToken)
     {

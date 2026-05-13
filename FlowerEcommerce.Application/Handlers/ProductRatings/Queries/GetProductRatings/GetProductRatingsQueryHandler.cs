@@ -1,22 +1,24 @@
-﻿using FlowerEcommerce.Application.Handlers.Products.Queries.GetProducts;
-
-namespace FlowerEcommerce.Application.Handlers.ProductRatings.Queries.GetProductRatings;
+﻿namespace FlowerEcommerce.Application.Handlers.ProductRatings.Queries.GetProductRatings;
 
 public class GetProductRatingsQueryHandler
     : IRequestHandler<GetProductRatingsQuery, TResult<IPaginate<GetProductRatingsQueryResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<GetProductRatingsQueryHandler> _logger;
 
-    public GetProductRatingsQueryHandler(IUnitOfWork unitOfWork)
+    public GetProductRatingsQueryHandler(IUnitOfWork unitOfWork, ILogger<GetProductRatingsQueryHandler> logger)
     {
-        _unitOfWork = unitOfWork;   
+        _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<TResult<IPaginate<GetProductRatingsQueryResponse>>> Handle(
         GetProductRatingsQuery request,
         CancellationToken cancellationToken)
     {
-        var ratings = await _unitOfWork.Repository<ProductRating>()
+        try
+        {
+            var ratings = await _unitOfWork.Repository<ProductRating>()
             .GetPagingListAsync(
                 predicate: r => r.ProductId == request.ProductId,
                 includes: [nameof(ProductRating.User)],
@@ -32,7 +34,15 @@ public class GetProductRatingsQueryHandler
                 size: request.PageSize,
                 cancellationToken: cancellationToken);
 
-        return TResult<IPaginate<GetProductRatingsQueryResponse>>
-            .Success(ratings);
+            return TResult<IPaginate<GetProductRatingsQueryResponse>>
+                .Success(ratings);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Get Product Ratings Failed");
+            return TResult<IPaginate<GetProductRatingsQueryResponse>>
+                .Failure(MessageKey.InternalError, ErrorCodes.SERVER_ERROR);
+        }
+
     }
 }

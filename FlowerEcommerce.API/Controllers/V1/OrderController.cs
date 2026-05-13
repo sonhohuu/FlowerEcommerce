@@ -11,19 +11,19 @@ namespace FlowerEcommerce.API.Controllers.V1;
 public class OrderController : BaseController
 {
     [Authorize(Policy = AppPolicy.AdminOrCustomer)]
-    [HttpPost]
+    [HttpPost(Name = "CreateOrder")]
     public async Task<IActionResult> CreateOrder(
         [FromBody] CreateOrderCommand command,
         CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
         return result.IsSuccess
-            ? Ok(ApiResponse<object>.Ok(null))
+            ? Ok(ApiResponse<object>.Ok(result.Data))
             : HandleResult(result);
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPut("{id}")]
+    [HttpPut("{id}", Name = "UpdateOrder")]
     public async Task<IActionResult> UpdateOrder(
         [FromBody] UpdateOrderCommand command,
         [FromRoute] ulong id,
@@ -37,7 +37,7 @@ public class OrderController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.CustomerOnly)]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}", Name = "DeleteOrder")]
     public async Task<IActionResult> DeleteOrder(
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
@@ -50,7 +50,7 @@ public class OrderController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOrCustomer)]
-    [HttpGet]
+    [HttpGet(Name = "GetOrders")]
     public async Task<IActionResult> GetOrders([FromQuery] GetOrdersQuery query,
         CancellationToken cancellationToken)
     {

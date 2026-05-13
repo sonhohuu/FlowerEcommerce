@@ -10,7 +10,7 @@ namespace FlowerEcommerce.API.Controllers.V1;
 public class UserController : BaseController
 {
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpGet]
+    [HttpGet(Name = "GetUsers")]
     public async Task<IActionResult> GetUsers([FromQuery] GetUsersQuery query,
     CancellationToken cancellationToken)
     {
@@ -21,9 +21,9 @@ public class UserController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPut("{id}/status")]
+    [HttpPut("{id}/status", Name = "UpdateUserStatus")]
     public async Task<IActionResult> UpdateUserStatus(
-        [FromBody] UpdateUserStatusCommand command,
+        [FromBody] UpdateUserStatusCommand command, 
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
     {

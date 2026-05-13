@@ -11,7 +11,7 @@ namespace FlowerEcommerce.API.Controllers;
 public class ProductController : BaseController
 {
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPost]
+    [HttpPost(Name = "CreateProduct")]
     public async Task<IActionResult> CreateProduct(
         [FromForm] CreateProductCommand command,
         CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public class ProductController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpPut("{id}")]
+    [HttpPut("{id}", Name = "UpdateProduct")]
     public async Task<IActionResult> UpdateProduct(
         [FromForm] UpdateProductCommand command,
         [FromRoute] ulong id,
@@ -37,7 +37,7 @@ public class ProductController : BaseController
     }
 
     [Authorize(Policy = AppPolicy.AdminOnly)]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}", Name = "DeleteProduct")]
     public async Task<IActionResult> DeleteProduct(
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
@@ -49,7 +49,7 @@ public class ProductController : BaseController
             : HandleResult(result);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "GetProductById")]
     public async Task<IActionResult> GetProductById(
         [FromRoute] ulong id,
         CancellationToken cancellationToken)
@@ -61,7 +61,7 @@ public class ProductController : BaseController
             : HandleResult(result);
     }
 
-    [HttpGet]
+    [HttpGet(Name = "GetProducts")]
     public async Task<IActionResult> GetProducts([FromQuery] GetProductsQuery query,
         CancellationToken cancellationToken)
     {
